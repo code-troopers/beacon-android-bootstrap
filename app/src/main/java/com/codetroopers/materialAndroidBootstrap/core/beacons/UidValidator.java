@@ -30,12 +30,10 @@ import static com.codetroopers.materialAndroidBootstrap.core.beacons.Constants.M
  */
 public class UidValidator {
 
-    private static final String TAG = UidValidator.class.getSimpleName();
-
-    private UidValidator() {
+    public UidValidator() {
     }
 
-    static void validate(String deviceAddress, byte[] serviceData, Beacon beacon) {
+    public void validate(String deviceAddress, byte[] serviceData, Beacon beacon) {
         beacon.hasUidFrame = true;
 
         // Tx power should have reasonable values.
@@ -82,7 +80,7 @@ public class UidValidator {
         }
     }
 
-    private static void logDeviceError(String deviceAddress, String err) {
+    private void logDeviceError(String deviceAddress, String err) {
         Timber.e("%s: %s", deviceAddress, err);
     }
 }

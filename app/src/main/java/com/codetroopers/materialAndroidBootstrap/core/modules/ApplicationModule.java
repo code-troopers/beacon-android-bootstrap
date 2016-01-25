@@ -2,6 +2,8 @@ package com.codetroopers.materialAndroidBootstrap.core.modules;
 
 import android.content.Context;
 
+import com.codetroopers.materialAndroidBootstrap.core.beacons.BeaconsSession;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -21,5 +23,11 @@ public class ApplicationModule {
     @ForApplication
     Context provideApplicationContext() {
         return applicationContext;
+    }
+
+    @Provides
+    @ForApplication
+    BeaconsSession provideSession() {
+        return new BeaconsSession();
     }
 }

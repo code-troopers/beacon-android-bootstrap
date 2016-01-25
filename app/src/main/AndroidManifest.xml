@@ -2,6 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.codetroopers.materialAndroidBootstrap">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
+
     <application
         android:name="com.codetroopers.materialAndroidBootstrap.core.AndroidBootstrapApplication"
         android:allowBackup="true"
@@ -16,11 +24,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.codetroopers.materialAndroidBootstrap.ui.activity.SettingsActivity"
+            android:label="@string/action_settings" />
+
         <!--Uncomment to add crashlytics-->
         <!--<meta-data-->
         <!--android:name="com.crashlytics.ApiKey"-->
         <!--android:value="<YOUR_KEY>" />-->
     </application>
-
-    <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>

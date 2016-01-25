@@ -14,24 +14,24 @@
 
 package com.codetroopers.materialAndroidBootstrap.core.beacons;
 
-class Beacon {
+public class Beacon {
     private static final String BULLET = "● ";
-    final String deviceAddress;
-    int rssi;
+    public final String deviceAddress;
+    public int rssi;
     // TODO: rename to make explicit the validation intent of this timestamp. We use it to
     // remember a recent frame to make sure that non-monotonic TLM values increase.
     long timestamp = System.currentTimeMillis();
 
     // Used to remove devices from the listview when they haven't been seen in a while.
-    long lastSeenTimestamp = System.currentTimeMillis();
+    public long lastSeenTimestamp = System.currentTimeMillis();
 
     byte[] uidServiceData;
     byte[] tlmServiceData;
     byte[] urlServiceData;
 
-    class UidStatus {
-        String uidValue;
-        int txPower;
+    public class UidStatus {
+        public String uidValue;
+        public int txPower;
 
         String errTx;
         String errUid;
@@ -52,12 +52,12 @@ class Beacon {
         }
     }
 
-    class TlmStatus {
-        String version;
-        String voltage;
-        String temp;
-        String advCnt;
-        String secCnt;
+    public class TlmStatus {
+        public String version;
+        public String voltage;
+        public String temp;
+        public String advCnt;
+        public String secCnt;
 
         String errIdentialFrame;
         String errVersion;
@@ -99,7 +99,7 @@ class Beacon {
         }
     }
 
-    class UrlStatus {
+    public class UrlStatus {
         String urlValue;
         String urlNotSet;
         String txPower;
@@ -125,10 +125,10 @@ class Beacon {
         }
     }
 
-    class FrameStatus {
-        String nullServiceData;
+    public class FrameStatus {
+        public String nullServiceData;
         String tooShortServiceData;
-        String invalidFrameType;
+        public String invalidFrameType;
 
         public String getErrors() {
             StringBuilder sb = new StringBuilder();
@@ -150,18 +150,18 @@ class Beacon {
         }
     }
 
-    boolean hasUidFrame;
-    UidStatus uidStatus = new UidStatus();
+    public boolean hasUidFrame;
+    public final UidStatus uidStatus = new UidStatus();
 
-    boolean hasTlmFrame;
-    TlmStatus tlmStatus = new TlmStatus();
+    public boolean hasTlmFrame;
+    public final TlmStatus tlmStatus = new TlmStatus();
 
-    boolean hasUrlFrame;
-    UrlStatus urlStatus = new UrlStatus();
+    public boolean hasUrlFrame;
+    public final UrlStatus urlStatus = new UrlStatus();
 
-    FrameStatus frameStatus = new FrameStatus();
+    public final FrameStatus frameStatus = new FrameStatus();
 
-    Beacon(String deviceAddress, int rssi) {
+    public Beacon(String deviceAddress, int rssi) {
         this.deviceAddress = deviceAddress;
         this.rssi = rssi;
     }
@@ -170,7 +170,7 @@ class Beacon {
      * Performs a case-insensitive contains test of s on the device address (with or without the
      * colon separators) and/or the UID value, and/or the URL value.
      */
-    boolean contains(String s) {
+    public boolean contains(String s) {
         return s == null
                 || s.isEmpty()
                 || deviceAddress.replace(":", "").toLowerCase().contains(s.toLowerCase())

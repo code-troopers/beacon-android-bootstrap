@@ -1,5 +1,6 @@
 package com.codetroopers.materialAndroidBootstrap.ui.activity;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -150,6 +151,8 @@ public class HomeActivity extends BaseActionBarActivity implements DrawerAdapter
                 mDrawer.openDrawer(GravityCompat.START);
                 return true;
             case R.id.action_settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
                 return true;
         }
         return super.onOptionsItemSelected(item);

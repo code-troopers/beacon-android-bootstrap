@@ -22,17 +22,17 @@ class Constants {
     /**
      * Eddystone-UID frame type value.
      */
-    static final byte UID_FRAME_TYPE = 0x00;
+    public static final byte UID_FRAME_TYPE = 0x00;
 
     /**
      * Eddystone-URL frame type value.
      */
-    static final byte URL_FRAME_TYPE = 0x10;
+    public static final byte URL_FRAME_TYPE = 0x10;
 
     /**
      * Eddystone-TLM frame type value.
      */
-    static final byte TLM_FRAME_TYPE = 0x20;
+    public static final byte TLM_FRAME_TYPE = 0x20;
 
     /**
      * Minimum expected Tx power (in dBm) in UID and URL frames.

@@ -32,7 +32,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Basic tests for the UidValidator class.
+ * Basic tests for the uidValidator class.
  */
 public class UidValidatorTest {
 
@@ -48,17 +48,19 @@ public class UidValidatorTest {
             0x00, 0x00
     };
 
+    private UidValidator uidValidator;
     private Beacon beacon;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
+        uidValidator = new UidValidator();
         beacon = new Beacon(DEVICE_ADDRESS, INITIAL_RSSI);
     }
 
     @Test
-    public void testUidValidator_success() throws IOException {
+    public void testuidValidator_success() throws IOException {
         byte[] serviceData = uidServiceData();
-        UidValidator.validate(DEVICE_ADDRESS, serviceData, beacon);
+        uidValidator.validate(DEVICE_ADDRESS, serviceData, beacon);
 
         // Only a UID frame.
         assertTrue(beacon.hasUidFrame);
@@ -72,10 +74,10 @@ public class UidValidatorTest {
 
     // Tx power should be between -100 and 20.
     @Test
-    public void testUidValidator_failsTxPowerBelowMin() throws IOException {
+    public void testuidValidator_failsTxPowerBelowMin() throws IOException {
         byte[] serviceData = uidServiceData();
         serviceData[1] = (byte) MIN_EXPECTED_TX_POWER - 1;
-        UidValidator.validate(DEVICE_ADDRESS, serviceData, beacon);
+        uidValidator.validate(DEVICE_ADDRESS, serviceData, beacon);
 
         assertNotNull(beacon.uidStatus.errTx);
         assertFalse(beacon.uidStatus.getErrors().isEmpty());
@@ -83,10 +85,10 @@ public class UidValidatorTest {
 
     // Tx power should be between -100 and 20.
     @Test
-    public void testUidValidator_failsTxPowerAboveMax() throws IOException {
+    public void testuidValidator_failsTxPowerAboveMax() throws IOException {
         byte[] serviceData = uidServiceData();
         serviceData[1] = (byte) MAX_EXPECTED_TX_POWER + 1;
-        UidValidator.validate(DEVICE_ADDRESS, serviceData, beacon);
+        uidValidator.validate(DEVICE_ADDRESS, serviceData, beacon);
 
         assertNotNull(beacon.uidStatus.errTx);
         assertFalse(beacon.uidStatus.getErrors().isEmpty());
@@ -94,7 +96,7 @@ public class UidValidatorTest {
 
     // An ID of all zeroes is certainly "valid" but probably indicates garbage.
     @Test
-    public void testUidValidator_failsZeroedId() {
+    public void testuidValidator_failsZeroedId() {
         byte[] serviceData = new byte[]{
                 UID_FRAME_TYPE, TX_POWER_LOW,
                 // 10-byte namespace
@@ -104,21 +106,21 @@ public class UidValidatorTest {
                 // RFU
                 0x00, 0x00
         };
-        UidValidator.validate(DEVICE_ADDRESS, serviceData, beacon);
+        uidValidator.validate(DEVICE_ADDRESS, serviceData, beacon);
 
         assertFalse(beacon.uidStatus.getErrors().isEmpty());
     }
 
     // The ID can't change between frames.
     @Test
-    public void testUidValidator_failsIdChanges() throws IOException {
+    public void testuidValidator_failsIdChanges() throws IOException {
         byte[] serviceData = uidServiceData();
-        UidValidator.validate(DEVICE_ADDRESS, serviceData, beacon);
+        uidValidator.validate(DEVICE_ADDRESS, serviceData, beacon);
 
         assertTrue(beacon.uidStatus.getErrors().isEmpty());
 
         serviceData[2] += 1;
-        UidValidator.validate(DEVICE_ADDRESS, serviceData, beacon);
+        uidValidator.validate(DEVICE_ADDRESS, serviceData, beacon);
 
         assertNotNull(beacon.uidStatus.errUid);
         assertFalse(beacon.uidStatus.getErrors().isEmpty());
@@ -126,10 +128,10 @@ public class UidValidatorTest {
 
     // RFU bytes should be zeroed.
     @Test
-    public void testUidValidator_failsNonZeroRfu() throws IOException {
+    public void testuidValidator_failsNonZeroRfu() throws IOException {
         byte[] serviceData = uidServiceData();
         serviceData[19] = 0x01;
-        UidValidator.validate(DEVICE_ADDRESS, serviceData, beacon);
+        uidValidator.validate(DEVICE_ADDRESS, serviceData, beacon);
 
         assertNotNull(beacon.uidStatus.errRfu);
         assertFalse(beacon.uidStatus.getErrors().isEmpty());

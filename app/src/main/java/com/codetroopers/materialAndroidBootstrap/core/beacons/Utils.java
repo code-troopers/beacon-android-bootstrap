@@ -14,10 +14,10 @@
 
 package com.codetroopers.materialAndroidBootstrap.core.beacons;
 
-public class Utils {
+class Utils {
     private static final char[] HEX = "0123456789ABCDEF".toCharArray();
 
-    static String toHexString(byte[] bytes) {
+    public static String toHexString(byte[] bytes) {
         if (bytes.length == 0) {
             return "";
         }

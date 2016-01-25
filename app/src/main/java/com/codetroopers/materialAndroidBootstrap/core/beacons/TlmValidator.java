@@ -29,45 +29,45 @@ import timber.log.Timber;
  */
 public class TlmValidator {
 
-    // TODO: tests
-    static final byte MIN_SERVICE_DATA_LEN = 14;
-
-    // TLM frames only support version 0x00 for now.
-    static final byte EXPECTED_VERSION = 0x00;
-
-    // Minimum expected voltage value in beacon telemetry in millivolts.
-    static final int MIN_EXPECTED_VOLTAGE = 500;
-
-    // Maximum expected voltage value in beacon telemetry in millivolts.
-    static final int MAX_EXPECTED_VOLTAGE = 10000;
-
-    // Value indicating temperature not supported. temp[0] == 0x80, temp[1] == 0x00.
-    static final float TEMPERATURE_NOT_SUPPORTED = -128.0f;
-
-    // Minimum expected temperature value in beacon telemetry in degrees Celsius.
-    static final float MIN_EXPECTED_TEMP = 0.0f;
-
-    // Maximum expected temperature value in beacon telemetry in degrees Celsius.
-    static final float MAX_EXPECTED_TEMP = 60.0f;
-
-    // Maximum expected PDU count in beacon telemetry.
-    // The fastest we'd expect to see a beacon transmitting would be about 10 Hz.
-    // Given that and a lifetime of ~3 years, any value above this is suspicious.
-    static final int MAX_EXPECTED_PDU_COUNT = 10 * 60 * 60 * 24 * 365 * 3;
-
-    // Maximum expected time since boot in beacon telemetry.
-    // Given that and a lifetime of ~3 years, any value above this is suspicious.
-    static final int MAX_EXPECTED_SEC_COUNT = 10 * 60 * 60 * 24 * 365 * 3;
-
     // The service data for a TLM frame should vary with each broadcast, but depending on the
     // firmware implementation a couple of consecutive TLM frames may be broadcast. Store the
     // frame only if few seconds have passed since we last saw one.
     static final int STORE_NEXT_FRAME_DELTA_MS = 3000;
 
-    private TlmValidator() {
+    // TODO: tests
+    private static final byte MIN_SERVICE_DATA_LEN = 14;
+
+    // TLM frames only support version 0x00 for now.
+    private static final byte EXPECTED_VERSION = 0x00;
+
+    // Minimum expected voltage value in beacon telemetry in millivolts.
+    private static final int MIN_EXPECTED_VOLTAGE = 500;
+
+    // Maximum expected voltage value in beacon telemetry in millivolts.
+    private static final int MAX_EXPECTED_VOLTAGE = 10000;
+
+    // Value indicating temperature not supported. temp[0] == 0x80, temp[1] == 0x00.
+    private static final float TEMPERATURE_NOT_SUPPORTED = -128.0f;
+
+    // Minimum expected temperature value in beacon telemetry in degrees Celsius.
+    private static final float MIN_EXPECTED_TEMP = 0.0f;
+
+    // Maximum expected temperature value in beacon telemetry in degrees Celsius.
+    private static final float MAX_EXPECTED_TEMP = 60.0f;
+
+    // Maximum expected PDU count in beacon telemetry.
+    // The fastest we'd expect to see a beacon transmitting would be about 10 Hz.
+    // Given that and a lifetime of ~3 years, any value above this is suspicious.
+    private static final int MAX_EXPECTED_PDU_COUNT = 10 * 60 * 60 * 24 * 365 * 3;
+
+    // Maximum expected time since boot in beacon telemetry.
+    // Given that and a lifetime of ~3 years, any value above this is suspicious.
+    private static final int MAX_EXPECTED_SEC_COUNT = 10 * 60 * 60 * 24 * 365 * 3;
+
+    public TlmValidator() {
     }
 
-    static void validate(String deviceAddress, byte[] serviceData, Beacon beacon) {
+    public void validate(String deviceAddress, byte[] serviceData, Beacon beacon) {
         beacon.hasTlmFrame = true;
 
         byte[] previousTlm = null;
@@ -198,7 +198,7 @@ public class TlmValidator {
         }
     }
 
-    private static void logDeviceError(String deviceAddress, String err) {
+    private void logDeviceError(String deviceAddress, String err) {
         Timber.e("%s: %s", deviceAddress, err);
     }
 }
