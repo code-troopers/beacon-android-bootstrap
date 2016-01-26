@@ -17,7 +17,6 @@ package com.codetroopers.materialAndroidBootstrap.ui.fragment;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
@@ -31,6 +30,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -47,6 +47,7 @@ import com.codetroopers.materialAndroidBootstrap.core.beacons.BeaconsSession;
 import com.codetroopers.materialAndroidBootstrap.core.beacons.BluetoothService;
 import com.codetroopers.materialAndroidBootstrap.core.modules.ForApplication;
 import com.codetroopers.materialAndroidBootstrap.ui.BeaconArrayAdapter;
+import com.codetroopers.materialAndroidBootstrap.ui.activity.HomeActivity;
 import com.codetroopers.materialAndroidBootstrap.ui.activity.SettingsActivity;
 
 import java.util.ArrayList;
@@ -90,7 +91,7 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // TODO injection
+        ((HomeActivity) getActivity()).getComponent().inject(this);
         init();
         beaconArrayAdapter = new BeaconArrayAdapter(getActivity(), new ArrayList<Beacon>());
         scanFilters = new ArrayList<>();

@@ -30,7 +30,7 @@ import static com.codetroopers.materialAndroidBootstrap.core.beacons.Constants.M
  */
 public class UrlValidator {
 
-    private UrlValidator() {
+    public UrlValidator() {
     }
 
     public void validate(String deviceAddress, byte[] serviceData, Beacon beacon) {

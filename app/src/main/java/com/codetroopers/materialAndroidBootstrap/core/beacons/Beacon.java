@@ -29,6 +29,11 @@ public class Beacon {
     byte[] tlmServiceData;
     byte[] urlServiceData;
 
+    public double distanceFromRssi() {
+        int pathLoss = uidStatus.txPower - rssi;
+        return Math.pow(10, (pathLoss - 41) / 20.0);
+    }
+
     public class UidStatus {
         public String uidValue;
         public int txPower;

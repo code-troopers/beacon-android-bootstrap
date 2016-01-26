@@ -81,7 +81,7 @@ public class BeaconArrayAdapter extends ArrayAdapter<Beacon> implements Filterab
         viewHolder.mRssi.setText(String.valueOf(beacon.rssi));
 
         final String distance = beacon.hasUidFrame ?
-                String.format(Locale.getDefault(), "%.2f m", distanceFromRssi(beacon.rssi, beacon.uidStatus.txPower)) :
+                String.format(Locale.getDefault(), "%.2f m", beacon.distanceFromRssi()) :
                 "unknown";
         viewHolder.mDistance.setText(distance);
 
@@ -192,11 +192,6 @@ public class BeaconArrayAdapter extends ArrayAdapter<Beacon> implements Filterab
 
     private void grey(TextView v) {
         v.setTextColor(Color.GRAY);
-    }
-
-    private double distanceFromRssi(int rssi, int txPower0m) {
-        int pathLoss = txPower0m - rssi;
-        return Math.pow(10, (pathLoss - 41) / 20.0);
     }
 
 

@@ -27,13 +27,11 @@ import com.codetroopers.materialAndroidBootstrap.util.UIUtils;
 import javax.inject.Inject;
 
 import butterknife.Bind;
-import hugo.weaving.DebugLog;
 import icepick.State;
 import timber.log.Timber;
 
 import static java.lang.String.format;
 
-@DebugLog
 public class HomeActivity extends BaseActionBarActivity implements DrawerAdapter.OnItemClickListener, HasComponent<HomeActivityComponent> {
 
     private HomeActivityComponent component;
@@ -59,7 +57,7 @@ public class HomeActivity extends BaseActionBarActivity implements DrawerAdapter
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        component = ComponentsFactory.get().buildHomeActivityComponent(getApplicationComponent(), this);
+        component = getComponent();
         component.injectActivity(this);
 
         final String device = UIUtils.isTablet(this) ? "tablet" : "phone";
@@ -165,6 +163,9 @@ public class HomeActivity extends BaseActionBarActivity implements DrawerAdapter
 
     @Override
     public HomeActivityComponent getComponent() {
+        if (component == null) {
+            component = ComponentsFactory.get().buildHomeActivityComponent(getApplicationComponent(), this);
+        }
         return component;
     }
 
