@@ -58,6 +58,7 @@ dependencies {
     def mockitoVersion = "1.10.19"
     def icepickVersion = "3.1.0"
     def googleSupportVersion = '23.1.1'
+    def ottoVersion = '1.3.8'
 
     apt "com.google.dagger:dagger-compiler:" + daggerVersion
     apt 'com.github.frankiesardo:auto-parcel-processor:' + autoparcelVersion
@@ -74,6 +75,7 @@ dependencies {
     compile 'com.jakewharton.timber:timber:3.1.0'
     compile 'com.github.frankiesardo:auto-parcel:' + autoparcelVersion
     compile 'frankiesardo:icepick:' + icepickVersion
+    compile 'com.squareup:otto:' + ottoVersion
 
     //Uncomment to add crashlytics
     //compile('com.crashlytics.sdk.android:crashlytics:2.2.0@aar') {

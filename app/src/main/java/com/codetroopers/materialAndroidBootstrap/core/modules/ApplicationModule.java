@@ -2,6 +2,10 @@ package com.codetroopers.materialAndroidBootstrap.core.modules;
 
 import android.content.Context;
 
+import com.squareup.otto.Bus;
+
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -21,5 +25,11 @@ public class ApplicationModule {
     @ForApplication
     Context provideApplicationContext() {
         return applicationContext;
+    }
+
+    @Provides
+    @Singleton
+    Bus provideBus() {
+        return new Bus();
     }
 }
