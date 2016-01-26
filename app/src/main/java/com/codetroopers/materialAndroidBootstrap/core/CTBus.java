@@ -4,6 +4,7 @@ import com.squareup.otto.Bus;
 
 import hugo.weaving.DebugLog;
 
+@SuppressWarnings("EmptyMethod")
 @DebugLog
 public class CTBus extends Bus {
     @Override

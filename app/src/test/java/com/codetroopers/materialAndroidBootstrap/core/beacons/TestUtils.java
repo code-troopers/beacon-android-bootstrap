@@ -14,7 +14,7 @@
 
 package com.codetroopers.materialAndroidBootstrap.core.beacons;
 
-public class TestUtils {
+class TestUtils {
     private TestUtils() {
     }
 

@@ -16,14 +16,14 @@
             android:id="@+id/deviceAddress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Device Address"
+            android:text="@string/device_address"
             android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:text="RSSI" />
+            android:text="@string/rssi" />
 
         <TextView
             android:id="@+id/rssi"
@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:text="Distance" />
+            android:text="@string/distance" />
 
         <TextView
             android:id="@+id/distance"
@@ -56,7 +56,7 @@
             android:id="@+id/uidLabel"
             android:layout_width="@dimen/frame_type_width"
             android:layout_height="wrap_content"
-            android:text="UID" />
+            android:text="@string/uid" />
 
         <LinearLayout
             android:id="@+id/uidGroup"
@@ -74,7 +74,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
-                    android:text="Namespace" />
+                    android:text="@string/namespace" />
 
                 <TextView
                     android:id="@+id/uidNamespace"
@@ -93,7 +93,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
-                    android:text="Instance" />
+                    android:text="@string/instance" />
 
                 <TextView
                     android:id="@+id/uidInstance"
@@ -112,7 +112,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
-                    android:text="Tx power" />
+                    android:text="@string/tx_power" />
 
                 <TextView
                     android:id="@+id/uidTxPower"
@@ -133,7 +133,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
-                    android:text="Errors"
+                    android:text="@string/errors"
                     android:textStyle="italic" />
 
                 <TextView
@@ -158,7 +158,7 @@
             android:id="@+id/tlmLabel"
             android:layout_width="@dimen/frame_type_width"
             android:layout_height="wrap_content"
-            android:text="TLM" />
+            android:text="@string/tlm" />
 
         <LinearLayout
             android:id="@+id/tlmGroup"
@@ -176,7 +176,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
-                    android:text="Version" />
+                    android:text="@string/version" />
 
                 <TextView
                     android:id="@+id/tlmVersion"
@@ -195,7 +195,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
-                    android:text="Voltage" />
+                    android:text="@string/voltage" />
 
                 <TextView
                     android:id="@+id/tlmVoltage"
@@ -214,7 +214,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
-                    android:text="Temperature" />
+                    android:text="@string/temperature" />
 
                 <TextView
                     android:id="@+id/tlmTemp"
@@ -233,7 +233,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
-                    android:text="PDU count" />
+                    android:text="@string/pdu_count" />
 
                 <TextView
                     android:id="@+id/tlmAdvCount"
@@ -252,7 +252,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
-                    android:text="Boot count" />
+                    android:text="@string/boot_count" />
 
                 <TextView
                     android:id="@+id/tlmSecCnt"
@@ -273,7 +273,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
-                    android:text="Errors"
+                    android:text="@string/errors"
                     android:textStyle="italic" />
 
                 <TextView
@@ -297,13 +297,13 @@
             android:id="@+id/urlLabel"
             android:layout_width="@dimen/frame_type_width"
             android:layout_height="wrap_content"
-            android:text="URL" />
+            android:text="@string/url" />
 
         <TextView
             android:id="@+id/urlStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="URL" />
+            android:text="@string/url" />
 
     </LinearLayout>
 
@@ -317,7 +317,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Frame errors: "
+            android:text="@string/frame_errors"
             android:textColor="#960000" />
 
         <TextView

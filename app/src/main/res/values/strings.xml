@@ -9,4 +9,23 @@
     <string name="drawer_close">close</string>
     <string name="empty" />
 
+    <string name="device_address">Device Address</string>
+    <string name="rssi">RSSI</string>
+    <string name="distance">Distance</string>
+    <string name="uid">UID</string>
+    <string name="namespace">Namespace</string>
+    <string name="instance">Instance</string>
+    <string name="tx_power">Tx power</string>
+    <string name="errors">Errors</string>
+    <string name="url">URL</string>
+    <string name="frame_errors">Frame errors:</string>
+    <string name="version">Version</string>
+    <string name="voltage">Voltage</string>
+    <string name="temperature">Temperature</string>
+    <string name="pdu_count">PDU count</string>
+    <string name="boot_count">Boot count</string>
+    <string name="device_address_uid_filter">Device Address / UID filter</string>
+    <string name="no_device">No Eddystone devices detected or matched the filter…</string>
+    <string name="tlm">TLM</string>
+
 </resources>

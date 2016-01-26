@@ -23,6 +23,7 @@ import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanRecord;
 import android.bluetooth.le.ScanResult;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -88,6 +89,9 @@ public class BeaconsFragment extends Fragment {
     BeaconsSession beaconsSession;
     @Inject
     CTBus bus;
+    @Inject
+    @ForApplication
+    Context appContext;
 
     private BluetoothLeScanner scanner;
     private BeaconArrayAdapter beaconArrayAdapter;
@@ -102,7 +106,8 @@ public class BeaconsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         ((HomeActivity) getActivity()).getComponent().inject(this);
         initScanner();
-        beaconArrayAdapter = new BeaconArrayAdapter(getActivity());
+        // see http://stackoverflow.com/questions/18896880/passing-context-to-arrayadapter-inside-fragment-with-setretaininstancetrue-wil
+        beaconArrayAdapter = new BeaconArrayAdapter(appContext);
         scanFilters = new ArrayList<>();
         scanFilters.add(bluetoothService.getScanFilter());
         scanCallback = getScanCallback();
@@ -208,7 +213,7 @@ public class BeaconsFragment extends Fragment {
     }
 
     @NonNull
-    protected ScanCallback getScanCallback() {
+    private ScanCallback getScanCallback() {
         return new ScanCallback() {
             @Override
             public void onScanResult(int callbackType, ScanResult result) {

@@ -15,7 +15,7 @@
         android:id="@+id/filter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Device Address / UID filter" />
+        android:hint="@string/device_address_uid_filter" />
 
     <ListView
         android:id="@+id/listView"
@@ -28,6 +28,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="16dp"
-        android:text="No Eddystone devices detected or matched the filter..." />
+        android:text="@string/no_device" />
 
 </LinearLayout>
