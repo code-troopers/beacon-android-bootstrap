@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.ScanFilter;
-import android.bluetooth.le.ScanRecord;
 import android.bluetooth.le.ScanSettings;
 import android.os.Build;
 import android.os.ParcelUuid;
@@ -16,15 +15,15 @@ import timber.log.Timber;
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class BluetoothService {
 
+    // The Eddystone Service UUID, 0xFEAA.
+    public static final ParcelUuid EDDYSTONE_SERVICE_UUID = ParcelUuid.fromString("0000FEAA-0000-1000-8000-00805F9B34FB");
+
     // An aggressive scan for nearby devices that reports immediately.
     private static final ScanSettings SCAN_SETTINGS =
             new ScanSettings.Builder()
                     .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
                     .setReportDelay(0)
                     .build();
-
-    // The Eddystone Service UUID, 0xFEAA.
-    private static final ParcelUuid EDDYSTONE_SERVICE_UUID = ParcelUuid.fromString("0000FEAA-0000-1000-8000-00805F9B34FB");
 
     private final BluetoothManager bluetoothManager;
     private final TlmValidator tlmValidator;
@@ -44,8 +43,7 @@ public class BluetoothService {
     }
 
     // Checks the frame type and hands off the service data to the validation module.
-    public boolean validateServiceData(Beacon beacon, ScanRecord scanRecord, String deviceAddress) {
-        byte[] serviceData = scanRecord.getServiceData(EDDYSTONE_SERVICE_UUID);
+    public boolean validateServiceData(Beacon beacon, byte[] serviceData, String deviceAddress) {
         if (serviceData == null) {
             String err = "Null Eddystone service data";
             beacon.frameStatus.nullServiceData = err;

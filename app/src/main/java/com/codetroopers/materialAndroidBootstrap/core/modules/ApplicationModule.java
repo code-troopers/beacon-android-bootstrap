@@ -2,7 +2,7 @@ package com.codetroopers.materialAndroidBootstrap.core.modules;
 
 import android.content.Context;
 
-import com.squareup.otto.Bus;
+import com.codetroopers.materialAndroidBootstrap.core.CTBus;
 
 import javax.inject.Singleton;
 
@@ -29,7 +29,7 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    Bus provideBus() {
-        return new Bus();
+    CTBus provideBus() {
+        return new CTBus();
     }
 }

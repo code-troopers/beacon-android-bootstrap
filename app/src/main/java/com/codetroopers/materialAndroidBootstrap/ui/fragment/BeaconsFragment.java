@@ -30,6 +30,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -42,6 +43,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.codetroopers.materialAndroidBootstrap.R;
+import com.codetroopers.materialAndroidBootstrap.core.CTBus;
 import com.codetroopers.materialAndroidBootstrap.core.beacons.Beacon;
 import com.codetroopers.materialAndroidBootstrap.core.beacons.BeaconsSession;
 import com.codetroopers.materialAndroidBootstrap.core.beacons.BluetoothService;
@@ -49,6 +51,10 @@ import com.codetroopers.materialAndroidBootstrap.core.modules.ForApplication;
 import com.codetroopers.materialAndroidBootstrap.ui.BeaconArrayAdapter;
 import com.codetroopers.materialAndroidBootstrap.ui.activity.HomeActivity;
 import com.codetroopers.materialAndroidBootstrap.ui.activity.SettingsActivity;
+import com.codetroopers.materialAndroidBootstrap.ui.event.BeaconStateChangedEvent;
+import com.codetroopers.materialAndroidBootstrap.ui.event.DeviceDetectedEvent;
+import com.codetroopers.materialAndroidBootstrap.ui.event.NewBeaconEvent;
+import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -79,6 +85,8 @@ public class BeaconsFragment extends Fragment {
     @Inject
     @ForApplication
     BeaconsSession beaconsSession;
+    @Inject
+    CTBus bus;
 
     private BluetoothLeScanner scanner;
     private BeaconArrayAdapter beaconArrayAdapter;
@@ -96,53 +104,7 @@ public class BeaconsFragment extends Fragment {
         beaconArrayAdapter = new BeaconArrayAdapter(getActivity());
         scanFilters = new ArrayList<>();
         scanFilters.add(bluetoothService.getScanFilter());
-        scanCallback = new ScanCallback() {
-            @Override
-            public void onScanResult(int callbackType, ScanResult result) {
-                ScanRecord scanRecord = result.getScanRecord();
-                if (scanRecord == null) {
-                    return;
-                }
-
-                final String deviceAddress = result.getDevice().getAddress();
-                final int rssi = result.getRssi();
-
-                final Beacon beacon;
-                if (beaconsSession.unknownDeviceAddress(deviceAddress)) {
-                    beacon = beaconsSession.addBeacon(deviceAddress, rssi);
-                    beaconArrayAdapter.add(beacon);
-                } else {
-                    beacon = beaconsSession.updateBeacon(deviceAddress, System.currentTimeMillis(), rssi);
-                }
-
-                final boolean updateView = bluetoothService.validateServiceData(beacon, scanRecord, deviceAddress);
-                if (updateView) {
-                    beaconArrayAdapter.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onScanFailed(int errorCode) {
-                switch (errorCode) {
-                    case SCAN_FAILED_ALREADY_STARTED:
-                        logErrorAndShowToast("SCAN_FAILED_ALREADY_STARTED");
-                        break;
-                    case SCAN_FAILED_APPLICATION_REGISTRATION_FAILED:
-                        logErrorAndShowToast("SCAN_FAILED_APPLICATION_REGISTRATION_FAILED");
-                        break;
-                    case SCAN_FAILED_FEATURE_UNSUPPORTED:
-                        logErrorAndShowToast("SCAN_FAILED_FEATURE_UNSUPPORTED");
-                        break;
-                    case SCAN_FAILED_INTERNAL_ERROR:
-                        logErrorAndShowToast("SCAN_FAILED_INTERNAL_ERROR");
-                        break;
-                    default:
-                        logErrorAndShowToast("Scan failed, unknown error code");
-                        break;
-                }
-            }
-        };
-
+        scanCallback = getScanCallback();
         onLostTimeoutMillis = sharedPreferences.getInt(SettingsActivity.ON_LOST_TIMEOUT_SECS_KEY, 5) * 1000;
     }
 
@@ -180,11 +142,15 @@ public class BeaconsFragment extends Fragment {
         if (scanner != null) {
             scanner.stopScan(scanCallback);
         }
+        bus.unregister(this);
+        bus.unregister(beaconsSession);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        bus.register(this);
+        bus.register(beaconsSession);
 
         handler.removeCallbacksAndMessages(null);
 
@@ -215,6 +181,68 @@ public class BeaconsFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_ENABLE_BLUETOOTH) {
+            if (resultCode == Activity.RESULT_OK) {
+                initScanner();
+            } else {
+                getActivity().finish();
+            }
+        }
+    }
+
+    @Subscribe
+    public void onNewBeacon(NewBeaconEvent event) {
+        beaconArrayAdapter.add(event.beacon);
+    }
+
+    @Subscribe
+    public void onBeaconStateChanged(BeaconStateChangedEvent event) {
+        beaconArrayAdapter.notifyDataSetChanged();
+    }
+
+    @NonNull
+    protected ScanCallback getScanCallback() {
+        return new ScanCallback() {
+            @Override
+            public void onScanResult(int callbackType, ScanResult result) {
+                ScanRecord scanRecord = result.getScanRecord();
+                if (scanRecord == null) {
+                    return;
+                }
+
+                final String deviceAddress = result.getDevice().getAddress();
+                final int rssi = result.getRssi();
+                final byte[] serviceData = scanRecord.getServiceData(BluetoothService.EDDYSTONE_SERVICE_UUID);
+
+                bus.post(new DeviceDetectedEvent(deviceAddress, rssi, serviceData));
+            }
+
+            @Override
+            public void onScanFailed(int errorCode) {
+                switch (errorCode) {
+                    case SCAN_FAILED_ALREADY_STARTED:
+                        logErrorAndShowToast("SCAN_FAILED_ALREADY_STARTED");
+                        break;
+                    case SCAN_FAILED_APPLICATION_REGISTRATION_FAILED:
+                        logErrorAndShowToast("SCAN_FAILED_APPLICATION_REGISTRATION_FAILED");
+                        break;
+                    case SCAN_FAILED_FEATURE_UNSUPPORTED:
+                        logErrorAndShowToast("SCAN_FAILED_FEATURE_UNSUPPORTED");
+                        break;
+                    case SCAN_FAILED_INTERNAL_ERROR:
+                        logErrorAndShowToast("SCAN_FAILED_INTERNAL_ERROR");
+                        break;
+                    default:
+                        logErrorAndShowToast("Scan failed, unknown error code");
+                        break;
+                }
+            }
+        };
+    }
+
     private void setOnLostRunnable() {
         Runnable removeLostDevices = new Runnable() {
             @Override
@@ -232,18 +260,6 @@ public class BeaconsFragment extends Fragment {
             }
         };
         handler.postDelayed(removeLostDevices, onLostTimeoutMillis);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_ENABLE_BLUETOOTH) {
-            if (resultCode == Activity.RESULT_OK) {
-                initScanner();
-            } else {
-                getActivity().finish();
-            }
-        }
     }
 
     // Attempts to create the scanner.
