@@ -46,6 +46,10 @@ public class BeaconArrayAdapter extends ArrayAdapter<Beacon> implements Filterab
     private final List<Beacon> allBeacons;
     private List<Beacon> filteredBeacons;
 
+    public BeaconArrayAdapter(Context context) {
+        this(context, new ArrayList<Beacon>());
+    }
+
     public BeaconArrayAdapter(Context context, List<Beacon> allBeacons) {
         super(context, R.layout.beacon_list_item, allBeacons);
         this.allBeacons = allBeacons;

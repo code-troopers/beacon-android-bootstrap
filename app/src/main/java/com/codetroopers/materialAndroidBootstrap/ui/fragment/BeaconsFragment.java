@@ -92,8 +92,8 @@ public class BeaconsFragment extends Fragment {
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ((HomeActivity) getActivity()).getComponent().inject(this);
-        init();
-        beaconArrayAdapter = new BeaconArrayAdapter(getActivity(), new ArrayList<Beacon>());
+        initScanner();
+        beaconArrayAdapter = new BeaconArrayAdapter(getActivity());
         scanFilters = new ArrayList<>();
         scanFilters.add(bluetoothService.getScanFilter());
         scanCallback = new ScanCallback() {
@@ -239,7 +239,7 @@ public class BeaconsFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_ENABLE_BLUETOOTH) {
             if (resultCode == Activity.RESULT_OK) {
-                init();
+                initScanner();
             } else {
                 getActivity().finish();
             }
@@ -247,7 +247,7 @@ public class BeaconsFragment extends Fragment {
     }
 
     // Attempts to create the scanner.
-    private void init() {
+    private void initScanner() {
         BluetoothAdapter btAdapter = bluetoothService.getAdapter();
         if (btAdapter == null) {
             showFinishingAlertDialog();
