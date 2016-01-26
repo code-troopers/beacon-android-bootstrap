@@ -31,11 +31,11 @@
 
             <fragment
                 android:id="@+id/fragment"
-                android:name="com.codetroopers.materialAndroidBootstrap.ui.fragment.MainActivityFragment"
+                android:name="com.codetroopers.materialAndroidBootstrap.ui.fragment.BeaconsFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/content"
-                tools:layout="@layout/fragment_main" />
+                tools:layout="@layout/fragment_beacons" />
 
 
         </RelativeLayout>

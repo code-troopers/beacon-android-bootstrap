@@ -66,7 +66,7 @@ import timber.log.Timber;
  * Main UI and logic for scanning and validation of results.
  */
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-public class MainActivityFragment extends Fragment {
+public class BeaconsFragment extends Fragment {
 
     private static final int REQUEST_ENABLE_BLUETOOTH = 1;
 
@@ -150,7 +150,7 @@ public class MainActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_main, container, false);
+        View view = inflater.inflate(R.layout.fragment_beacons, container, false);
 
         final ViewHolder viewHolder = new ViewHolder(view);
         viewHolder.mFilter.addTextChangedListener(new TextWatcher() {
