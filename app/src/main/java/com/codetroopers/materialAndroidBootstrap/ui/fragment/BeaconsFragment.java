@@ -32,6 +32,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -167,8 +168,11 @@ public class BeaconsFragment extends Fragment {
 
                 @Override
                 public void run() {
-                    getActivity().setTitle(String.format(Locale.getDefault(), "%s (%d)", appName, beaconsSession.countBeacons()));
-                    handler.postDelayed(this, 1000);
+                    final FragmentActivity activity = getActivity();
+                    if (activity != null) {
+                        activity.setTitle(String.format(Locale.getDefault(), "%s (%d)", appName, beaconsSession.countBeacons()));
+                        handler.postDelayed(this, 1000);
+                    }
                 }
             };
             handler.postDelayed(updateTitleWithNumberSightedBeacons, 1000);
