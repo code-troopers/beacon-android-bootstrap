@@ -47,7 +47,7 @@ public class BluetoothService {
         if (serviceData == null) {
             String err = "Null Eddystone service data";
             beacon.frameStatus.nullServiceData = err;
-            logDeviceError(deviceAddress, err);
+            Timber.e("%s: %s", deviceAddress, err);
             return false;
         }
         Timber.v("%s %s", deviceAddress, Utils.toHexString(serviceData));
@@ -64,7 +64,7 @@ public class BluetoothService {
             default:
                 String err = String.format("Invalid frame type byte %02X", serviceData[0]);
                 beacon.frameStatus.invalidFrameType = err;
-                logDeviceError(deviceAddress, err);
+                Timber.e("%s: %s", deviceAddress, err);
                 break;
         }
         return true;
@@ -76,9 +76,5 @@ public class BluetoothService {
 
     public ScanSettings getScanSettings() {
         return SCAN_SETTINGS;
-    }
-
-    private void logDeviceError(String deviceAddress, String err) {
-        Timber.e("%s: %s", deviceAddress, err);
     }
 }

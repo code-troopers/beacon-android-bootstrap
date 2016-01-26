@@ -44,7 +44,7 @@ public class UidValidator {
                     "Expected UID Tx power between %d and %d, got %d",
                     MIN_EXPECTED_TX_POWER, MAX_EXPECTED_TX_POWER, txPower);
             beacon.uidStatus.errTx = err;
-            logDeviceError(deviceAddress, err);
+            Timber.e("%s: %s", deviceAddress, err);
         }
 
         // The namespace and instance bytes should not be all zeroes.
@@ -53,7 +53,7 @@ public class UidValidator {
         if (Utils.isZeroed(uidBytes)) {
             String err = "UID bytes are all 0x00";
             beacon.uidStatus.errUid = err;
-            logDeviceError(deviceAddress, err);
+            Timber.e("%s: %s", deviceAddress, err);
         }
 
         // If we have a previous frame, verify the ID isn't changing.
@@ -66,7 +66,7 @@ public class UidValidator {
                         Utils.toHexString(previousUidBytes),
                         Utils.toHexString(uidBytes));
                 beacon.uidStatus.errUid = err;
-                logDeviceError(deviceAddress, err);
+                Timber.e("%s: %s", deviceAddress, err);
                 beacon.uidServiceData = serviceData.clone();
             }
         }
@@ -76,11 +76,7 @@ public class UidValidator {
         if (rfu[0] != 0x00 || rfu[1] != 0x00) {
             String err = "Expected UID RFU bytes to be 0x00, were " + Utils.toHexString(rfu);
             beacon.uidStatus.errRfu = err;
-            logDeviceError(deviceAddress, err);
+            Timber.e("%s: %s", deviceAddress, err);
         }
-    }
-
-    private void logDeviceError(String deviceAddress, String err) {
-        Timber.e("%s: %s", deviceAddress, err);
     }
 }

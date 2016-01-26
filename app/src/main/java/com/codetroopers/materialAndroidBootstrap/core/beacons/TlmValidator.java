@@ -82,7 +82,7 @@ public class TlmValidator {
                         "TLM service data was identical to recent TLM frame:\n" + Utils
                                 .toHexString(serviceData);
                 beacon.tlmStatus.errIdentialFrame = err;
-                logDeviceError(deviceAddress, err);
+                Timber.e("%s: %s", deviceAddress, err);
                 beacon.tlmServiceData = serviceData;
             }
         }
@@ -92,7 +92,7 @@ public class TlmValidator {
                     "TLM frame too short, needs at least %d bytes, got %d",
                     MIN_SERVICE_DATA_LEN, serviceData.length);
             beacon.frameStatus.tooShortServiceData = err;
-            logDeviceError(deviceAddress, err);
+            Timber.e("%s: %s", deviceAddress, err);
             return;
         }
 
@@ -106,7 +106,7 @@ public class TlmValidator {
             String err = String.format("Bad TLM version, expected 0x%02X, got %02X",
                     EXPECTED_VERSION, version);
             beacon.tlmStatus.errVersion = err;
-            logDeviceError(deviceAddress, err);
+            Timber.e("%s: %s", deviceAddress, err);
         }
 
         // Battery voltage should be sane. Zero is fine if the device is externally powered, but
@@ -118,7 +118,7 @@ public class TlmValidator {
                     "Expected TLM voltage to be between %d and %d, got %d",
                     MIN_EXPECTED_VOLTAGE, MAX_EXPECTED_VOLTAGE, voltage);
             beacon.tlmStatus.errVoltage = err;
-            logDeviceError(deviceAddress, err);
+            Timber.e("%s: %s", deviceAddress, err);
         }
 
         // Temp varies a lot with the hardware and the margins appear to be very wide. USB beacons
@@ -133,7 +133,7 @@ public class TlmValidator {
                         "Expected TLM temperature to be between %.2f and %.2f, got %.2f",
                         MIN_EXPECTED_TEMP, MAX_EXPECTED_TEMP, temp);
                 beacon.tlmStatus.errTemp = err;
-                logDeviceError(deviceAddress, err);
+                Timber.e("%s: %s", deviceAddress, err);
             }
         }
 
@@ -143,21 +143,21 @@ public class TlmValidator {
         if (advCnt <= 0) {
             String err = "Expected TLM ADV count to be positive, got " + advCnt;
             beacon.tlmStatus.errPduCnt = err;
-            logDeviceError(deviceAddress, err);
+            Timber.e("%s: %s", deviceAddress, err);
         }
         if (advCnt > MAX_EXPECTED_PDU_COUNT) {
             String err = String.format(Locale.getDefault(),
                     "TLM ADV count %d is higher than expected max of %d",
                     advCnt, MAX_EXPECTED_PDU_COUNT);
             beacon.tlmStatus.errPduCnt = err;
-            logDeviceError(deviceAddress, err);
+            Timber.e("%s: %s", deviceAddress, err);
         }
         if (previousTlm != null) {
             int previousAdvCnt = ByteBuffer.wrap(previousTlm, 6, 4).getInt();
             if (previousAdvCnt == advCnt) {
                 String err = "Expected increasing TLM PDU count but unchanged from " + advCnt;
                 beacon.tlmStatus.errPduCnt = err;
-                logDeviceError(deviceAddress, err);
+                Timber.e("%s: %s", deviceAddress, err);
             }
         }
 
@@ -169,21 +169,21 @@ public class TlmValidator {
         if (uptime <= 0) {
             String err = "Expected TLM time since boot to be positive, got " + uptime;
             beacon.tlmStatus.errSecCnt = err;
-            logDeviceError(deviceAddress, err);
+            Timber.e("%s: %s", deviceAddress, err);
         }
         if (uptime > MAX_EXPECTED_SEC_COUNT) {
             String err = String.format(Locale.getDefault(),
                     "TLM time since boot %d is higher than expected max of %d",
                     uptime, MAX_EXPECTED_SEC_COUNT);
             beacon.tlmStatus.errSecCnt = err;
-            logDeviceError(deviceAddress, err);
+            Timber.e("%s: %s", deviceAddress, err);
         }
         if (previousTlm != null) {
             int previousUptime = ByteBuffer.wrap(previousTlm, 10, 4).getInt();
             if (previousUptime == uptime) {
                 String err = "Expected increasing TLM time since boot but unchanged from " + uptime;
                 beacon.tlmStatus.errSecCnt = err;
-                logDeviceError(deviceAddress, err);
+                Timber.e("%s: %s", deviceAddress, err);
             }
         }
 
@@ -192,13 +192,9 @@ public class TlmValidator {
             if (b != 0x00) {
                 String err = "Expected TLM RFU bytes to be 0x00, were " + Utils.toHexString(rfu);
                 beacon.tlmStatus.errRfu = err;
-                logDeviceError(deviceAddress, err);
+                Timber.e("%s: %s", deviceAddress, err);
                 break;
             }
         }
-    }
-
-    private void logDeviceError(String deviceAddress, String err) {
-        Timber.e("%s: %s", deviceAddress, err);
     }
 }

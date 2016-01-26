@@ -43,7 +43,7 @@ public class UrlValidator {
                     "Expected URL Tx power between %d and %d, got %d",
                     MIN_EXPECTED_TX_POWER, MAX_EXPECTED_TX_POWER, txPower);
             beacon.urlStatus.txPower = err;
-            logDeviceError(deviceAddress, err);
+            Timber.e("%s: %s", deviceAddress, err);
         }
 
         // The URL bytes should not be all zeroes.
@@ -51,13 +51,9 @@ public class UrlValidator {
         if (Utils.isZeroed(urlBytes)) {
             String err = "URL bytes are all 0x00";
             beacon.urlStatus.urlNotSet = err;
-            logDeviceError(deviceAddress, err);
+            Timber.e("%s: %s", deviceAddress, err);
         }
 
         beacon.urlStatus.urlValue = UrlUtils.decodeUrl(serviceData);
-    }
-
-    private void logDeviceError(String deviceAddress, String err) {
-        Timber.e("%s: %s", deviceAddress, err);
     }
 }
