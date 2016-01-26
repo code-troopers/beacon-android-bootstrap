@@ -69,7 +69,7 @@ public class BeaconArrayAdapter extends ArrayAdapter<Beacon> implements Filterab
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext())
+            convertView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.beacon_list_item, parent, false);
         }
 
