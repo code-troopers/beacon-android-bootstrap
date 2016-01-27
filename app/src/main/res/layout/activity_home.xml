@@ -31,7 +31,7 @@
                 android:text="@string/empty" />
 
             <fragment
-                android:id="@+id/fragment"
+                android:id="@+id/beacons_fragment"
                 android:name="com.codetroopers.materialAndroidBootstrap.ui.fragment.BeaconsFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
