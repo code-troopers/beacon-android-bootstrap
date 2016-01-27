@@ -146,6 +146,7 @@ public class BeaconsFragment extends Fragment {
     public void onPause() {
         super.onPause();
         if (scanner != null) {
+            Timber.i("Stopping BLE scan...");
             scanner.stopScan(scanCallback);
         }
         bus.unregister(this);
@@ -186,6 +187,7 @@ public class BeaconsFragment extends Fragment {
         }
 
         if (scanner != null) {
+            Timber.i("Starting BLE scan...");
             scanner.startScan(scanFilters, bluetoothService.getScanSettings(), scanCallback);
         }
     }
@@ -256,6 +258,8 @@ public class BeaconsFragment extends Fragment {
         Runnable removeLostDevices = new Runnable() {
             @Override
             public void run() {
+                Timber.d("Removing lost devices...");
+
                 long time = System.currentTimeMillis();
                 Iterator<Entry<String, Beacon>> itr = beaconsSession.getIterator();
                 while (itr.hasNext()) {
