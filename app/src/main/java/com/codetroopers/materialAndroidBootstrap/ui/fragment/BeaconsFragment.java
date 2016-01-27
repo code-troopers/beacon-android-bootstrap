@@ -174,7 +174,7 @@ public class BeaconsFragment extends Fragment {
                 @Override
                 public void run() {
                     final FragmentActivity activity = getActivity();
-                    if (activity != null) {
+                    if (activity != null && !activity.isDestroyed()) {
                         activity.setTitle(String.format(Locale.getDefault(), "%s (%d)", appName, beaconsSession.countBeacons()));
                         handler.postDelayed(this, 1000);
                     }
@@ -268,7 +268,10 @@ public class BeaconsFragment extends Fragment {
                         beaconArrayAdapter.remove(beacon);
                     }
                 }
-                handler.postDelayed(this, onLostTimeoutMillis);
+                final FragmentActivity activity = getActivity();
+                if (activity != null && !activity.isDestroyed()) {
+                    handler.postDelayed(this, onLostTimeoutMillis);
+                }
             }
         };
         handler.postDelayed(removeLostDevices, onLostTimeoutMillis);
