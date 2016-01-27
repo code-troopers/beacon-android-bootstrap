@@ -200,7 +200,7 @@ public class HomeActivity extends BaseActionBarActivity implements
         if (mDrawer.isDrawerOpen(mNavigationView)) {
             mDrawer.closeDrawers();
         } else {
-            //Do fragement replacement or close activity/app
+            finish();
         }
     }
 
