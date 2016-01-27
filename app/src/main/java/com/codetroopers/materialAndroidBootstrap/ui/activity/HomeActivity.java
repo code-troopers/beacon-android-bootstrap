@@ -34,7 +34,10 @@ import timber.log.Timber;
 
 import static java.lang.String.format;
 
-public class HomeActivity extends BaseActionBarActivity implements DrawerAdapter.OnItemClickListener, HasComponent<HomeActivityComponent> {
+@DebugLog
+public class HomeActivity extends BaseActionBarActivity implements
+        DrawerLayout.DrawerListener,
+        NavigationView.OnNavigationItemSelectedListener, HasComponent<HomeActivityComponent> {
 
     private HomeActivityComponent component;
 
