@@ -24,7 +24,6 @@ import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanRecord;
 import android.bluetooth.le.ScanResult;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -291,11 +290,8 @@ public class BeaconsFragment extends Fragment {
     // Pops an AlertDialog that quits the app on OK.
     private void showFinishingAlertDialog() {
         new AlertDialog.Builder(getActivity()).setTitle("Bluetooth Error").setMessage("Bluetooth not detected on device")
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        getActivity().finish();
-                    }
+                .setPositiveButton("OK", (dialogInterface, i) -> {
+                    getActivity().finish();
                 }).show();
     }
 

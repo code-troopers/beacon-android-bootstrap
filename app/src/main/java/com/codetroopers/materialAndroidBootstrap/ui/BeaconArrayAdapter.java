@@ -47,7 +47,7 @@ public class BeaconArrayAdapter extends ArrayAdapter<Beacon> implements Filterab
     private List<Beacon> filteredBeacons;
 
     public BeaconArrayAdapter(Context context) {
-        this(context, new ArrayList<Beacon>());
+        this(context, new ArrayList<>());
     }
 
     private BeaconArrayAdapter(Context context, List<Beacon> allBeacons) {
