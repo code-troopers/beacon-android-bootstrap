@@ -2,12 +2,12 @@ package com.codetroopers.materialAndroidBootstrap.core;
 
 import android.app.Application;
 import android.util.Log;
-
 import com.codetroopers.materialAndroidBootstrap.BuildConfig;
 import com.codetroopers.materialAndroidBootstrap.core.components.ApplicationComponent;
 import com.codetroopers.materialAndroidBootstrap.core.components.ComponentsFactory;
+import com.kontakt.sdk.android.common.KontaktSDK;
+import com.kontakt.sdk.android.common.log.LogLevel;
 import com.squareup.leakcanary.LeakCanary;
-
 import icepick.Icepick;
 import timber.log.Timber;
 
@@ -23,6 +23,8 @@ public class AndroidBootstrapApplication extends Application implements HasCompo
         initLoggers();
         Icepick.setDebug(BuildConfig.DEBUG);
         LeakCanary.install(this);
+
+        initKontaktSdk();
     }
 
     @Override
@@ -50,6 +52,15 @@ public class AndroidBootstrapApplication extends Application implements HasCompo
                     }
                 }
             });
+        }
+    }
+
+    private void initKontaktSdk() {
+        KontaktSDK kontaktSDK = KontaktSDK.initialize(this);
+        if (BuildConfig.DEBUG) {
+            kontaktSDK
+                    .setDebugLoggingEnabled(BuildConfig.DEBUG)
+                    .setLogLevelEnabled(LogLevel.DEBUG, true);
         }
     }
 }

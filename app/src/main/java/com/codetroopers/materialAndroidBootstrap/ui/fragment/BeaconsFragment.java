@@ -15,102 +15,60 @@
 package com.codetroopers.materialAndroidBootstrap.ui.fragment;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.le.BluetoothLeScanner;
-import android.bluetooth.le.ScanCallback;
-import android.bluetooth.le.ScanFilter;
-import android.bluetooth.le.ScanRecord;
-import android.bluetooth.le.ScanResult;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import com.codetroopers.materialAndroidBootstrap.R;
-import com.codetroopers.materialAndroidBootstrap.core.CTBus;
-import com.codetroopers.materialAndroidBootstrap.core.beacons.Beacon;
-import com.codetroopers.materialAndroidBootstrap.core.beacons.BeaconsSession;
-import com.codetroopers.materialAndroidBootstrap.core.beacons.BluetoothService;
 import com.codetroopers.materialAndroidBootstrap.core.modules.ForApplication;
 import com.codetroopers.materialAndroidBootstrap.ui.BeaconArrayAdapter;
 import com.codetroopers.materialAndroidBootstrap.ui.activity.HomeActivity;
-import com.codetroopers.materialAndroidBootstrap.ui.activity.SettingsActivity;
-import com.codetroopers.materialAndroidBootstrap.ui.event.BeaconStateChangedEvent;
-import com.codetroopers.materialAndroidBootstrap.ui.event.DeviceDetectedEvent;
-import com.codetroopers.materialAndroidBootstrap.ui.event.NewBeaconEvent;
-import com.squareup.otto.Subscribe;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map.Entry;
+import com.kontakt.sdk.android.ble.configuration.scan.ScanContext;
+import com.kontakt.sdk.android.ble.connection.OnServiceReadyListener;
+import com.kontakt.sdk.android.ble.discovery.BluetoothDeviceEvent;
+import com.kontakt.sdk.android.ble.manager.ProximityManager;
+import com.kontakt.sdk.android.common.profile.DeviceProfile;
+import com.kontakt.sdk.android.common.profile.RemoteBluetoothDevice;
+import com.kontakt.sdk.android.manager.KontaktProximityManager;
+import timber.log.Timber;
 
 import javax.inject.Inject;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import timber.log.Timber;
+import java.util.List;
 
 /**
  * Main UI and logic for scanning and validation of results.
  */
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-public class BeaconsFragment extends Fragment {
+public class BeaconsFragment extends Fragment implements ProximityManager.ProximityListener {
 
-    private static final int REQUEST_ENABLE_BLUETOOTH = 1;
-
-    private static final Handler handler = new Handler(Looper.getMainLooper());
-
-    @Inject
-    BluetoothService bluetoothService;
     @Inject
     SharedPreferences sharedPreferences;
     @Inject
     @ForApplication
-    BeaconsSession beaconsSession;
-    @Inject
-    CTBus bus;
-    @Inject
-    @ForApplication
     Context appContext;
+    @Inject
+    KontaktProximityManager proximityManager;
+    @Inject
+    ScanContext scanContext;
 
-    private BluetoothLeScanner scanner;
     private BeaconArrayAdapter beaconArrayAdapter;
-
-    private List<ScanFilter> scanFilters;
-    private ScanCallback scanCallback;
-
-    private int onLostTimeoutMillis;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ((HomeActivity) getActivity()).getComponent().inject(this);
-        initScanner();
         // see http://stackoverflow.com/questions/18896880/passing-context-to-arrayadapter-inside-fragment-with-setretaininstancetrue-wil
         beaconArrayAdapter = new BeaconArrayAdapter(appContext);
-        scanFilters = new ArrayList<>();
-        scanFilters.add(bluetoothService.getScanFilter());
-        scanCallback = getScanCallback();
-        onLostTimeoutMillis = sharedPreferences.getInt(SettingsActivity.ON_LOST_TIMEOUT_SECS_KEY, 5) * 1000;
     }
 
     @Override
@@ -120,187 +78,77 @@ public class BeaconsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_beacons, container, false);
 
         final ViewHolder viewHolder = new ViewHolder(view);
-        viewHolder.mFilter.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // NOP
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // NOP
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                beaconArrayAdapter.getFilter().filter(viewHolder.mFilter.getText().toString());
-            }
-        });
         viewHolder.mListView.setAdapter(beaconArrayAdapter);
         viewHolder.mListView.setEmptyView(viewHolder.mPlaceholder);
         return view;
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        if (scanner != null) {
-            Timber.i("Stopping BLE scan...");
-            scanner.stopScan(scanCallback);
-        }
-        bus.unregister(this);
-        bus.unregister(beaconsSession);
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
-        bus.register(this);
-        bus.register(beaconsSession);
-
-        handler.removeCallbacksAndMessages(null);
-
-        int timeoutMillis = sharedPreferences.getInt(SettingsActivity.ON_LOST_TIMEOUT_SECS_KEY, 5) * 1000;
-
-        if (timeoutMillis > 0) {  // 0 is special and means don't remove anything.
-            onLostTimeoutMillis = timeoutMillis;
-            setOnLostRunnable();
-        }
-
-        if (sharedPreferences.getBoolean(SettingsActivity.SHOW_DEBUG_INFO_KEY, false)) {
-            Runnable updateTitleWithNumberSightedBeacons = new Runnable() {
-                final String appName = getActivity().getString(R.string.app_name);
-
-                @Override
-                public void run() {
-                    final FragmentActivity activity = getActivity();
-                    if (activity != null && !activity.isDestroyed()) {
-                        activity.setTitle(String.format(Locale.getDefault(), "%s (%d)", appName, beaconsSession.countBeacons()));
-                        handler.postDelayed(this, 1000);
-                    }
-                }
-            };
-            handler.postDelayed(updateTitleWithNumberSightedBeacons, 1000);
-        } else {
-            getActivity().setTitle(getActivity().getString(R.string.app_name));
-        }
-
-        if (scanner != null) {
-            Timber.i("Starting BLE scan...");
-            scanner.startScan(scanFilters, bluetoothService.getScanSettings(), scanCallback);
-        }
+        getActivity().setTitle(getActivity().getString(R.string.app_name));
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_ENABLE_BLUETOOTH) {
-            if (resultCode == Activity.RESULT_OK) {
-                initScanner();
-            } else {
-                getActivity().finish();
-            }
-        }
-    }
+    public void onStart() {
+        super.onStart();
 
-    @Subscribe
-    public void onNewBeacon(NewBeaconEvent event) {
-        beaconArrayAdapter.add(event.beacon);
-    }
-
-    @Subscribe
-    public void onBeaconStateChanged(BeaconStateChangedEvent event) {
-        beaconArrayAdapter.notifyDataSetChanged();
-    }
-
-    @NonNull
-    private ScanCallback getScanCallback() {
-        return new ScanCallback() {
+        proximityManager.initializeScan(scanContext, new OnServiceReadyListener() {
             @Override
-            public void onScanResult(int callbackType, ScanResult result) {
-                ScanRecord scanRecord = result.getScanRecord();
-                if (scanRecord == null) {
-                    return;
-                }
-
-                final String deviceAddress = result.getDevice().getAddress();
-                final int rssi = result.getRssi();
-                final byte[] serviceData = scanRecord.getServiceData(BluetoothService.EDDYSTONE_SERVICE_UUID);
-
-                bus.post(new DeviceDetectedEvent(deviceAddress, rssi, serviceData));
+            public void onServiceReady() {
+                proximityManager.attachListener(BeaconsFragment.this);
             }
 
             @Override
-            public void onScanFailed(int errorCode) {
-                switch (errorCode) {
-                    case SCAN_FAILED_ALREADY_STARTED:
-                        logErrorAndShowToast("SCAN_FAILED_ALREADY_STARTED");
-                        break;
-                    case SCAN_FAILED_APPLICATION_REGISTRATION_FAILED:
-                        logErrorAndShowToast("SCAN_FAILED_APPLICATION_REGISTRATION_FAILED");
-                        break;
-                    case SCAN_FAILED_FEATURE_UNSUPPORTED:
-                        logErrorAndShowToast("SCAN_FAILED_FEATURE_UNSUPPORTED");
-                        break;
-                    case SCAN_FAILED_INTERNAL_ERROR:
-                        logErrorAndShowToast("SCAN_FAILED_INTERNAL_ERROR");
-                        break;
-                    default:
-                        logErrorAndShowToast("Scan failed, unknown error code");
-                        break;
-                }
+            public void onConnectionFailure() {
+                Timber.e("Proximity manager connexion failure");
             }
-        };
+        });
     }
 
-    private void setOnLostRunnable() {
-        Runnable removeLostDevices = new Runnable() {
-            @Override
-            public void run() {
-                Timber.d("Removing lost devices...");
+    @Override
+    public void onStop() {
+        super.onStop();
+        proximityManager.detachListener(this);
+        proximityManager.disconnect();
+    }
 
-                long time = System.currentTimeMillis();
-                Iterator<Entry<String, Beacon>> itr = beaconsSession.getIterator();
-                while (itr.hasNext()) {
-                    Beacon beacon = itr.next().getValue();
-                    if ((time - beacon.lastSeenTimestamp) > onLostTimeoutMillis) {
-                        itr.remove();
-                        beaconArrayAdapter.remove(beacon);
+    @Override
+    public void onScanStart() {
+        Timber.d("scan started");
+    }
+
+    @Override
+    public void onScanStop() {
+        Timber.d("scan stopped");
+    }
+
+    @Override
+    public void onEvent(BluetoothDeviceEvent bluetoothDeviceEvent) {
+        List<? extends RemoteBluetoothDevice> deviceList = bluetoothDeviceEvent.getDeviceList();
+        if(DeviceProfile.EDDYSTONE.equals(bluetoothDeviceEvent.getDeviceProfile())) {
+            switch (bluetoothDeviceEvent.getEventType()) {
+                case SPACE_ENTERED:
+                    Timber.d("namespace or region entered");
+                    break;
+                case DEVICE_DISCOVERED:
+                    Timber.d("found new beacon");
+                    for (RemoteBluetoothDevice device : deviceList) {
+                        beaconArrayAdapter.add(device);
+                        beaconArrayAdapter.notifyDataSetChanged();
                     }
-                }
-                final FragmentActivity activity = getActivity();
-                if (activity != null && !activity.isDestroyed()) {
-                    handler.postDelayed(this, onLostTimeoutMillis);
-                }
+                    break;
+                case DEVICES_UPDATE:
+                    Timber.d("updated beacons");
+                    break;
+                case DEVICE_LOST:
+                    Timber.d("lost device");
+                    break;
+                case SPACE_ABANDONED:
+                    Timber.d("namespace or region abandoned");
+                    break;
             }
-        };
-        handler.postDelayed(removeLostDevices, onLostTimeoutMillis);
-    }
-
-    // Attempts to create the scanner.
-    private void initScanner() {
-        BluetoothAdapter btAdapter = bluetoothService.getAdapter();
-        if (btAdapter == null) {
-            showFinishingAlertDialog();
-        } else if (!btAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            this.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BLUETOOTH);
-        } else {
-            scanner = btAdapter.getBluetoothLeScanner();
         }
-    }
-
-    // Pops an AlertDialog that quits the app on OK.
-    private void showFinishingAlertDialog() {
-        new AlertDialog.Builder(getActivity()).setTitle("Bluetooth Error").setMessage("Bluetooth not detected on device")
-                .setPositiveButton("OK", (dialogInterface, i) -> {
-                    getActivity().finish();
-                }).show();
-    }
-
-    private void logErrorAndShowToast(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-        Timber.e(message);
     }
 
     /**
@@ -310,8 +158,6 @@ public class BeaconsFragment extends Fragment {
      * @author ButterKnifeZelezny, plugin for Android Studio by Avast Developers (http://github.com/avast)
      */
     static class ViewHolder {
-        @Bind(R.id.filter)
-        EditText mFilter;
         @Bind(R.id.listView)
         ListView mListView;
         @Bind(R.id.placeholder)

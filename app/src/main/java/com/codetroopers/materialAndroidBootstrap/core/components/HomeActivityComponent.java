@@ -1,17 +1,14 @@
 package com.codetroopers.materialAndroidBootstrap.core.components;
 
-import com.codetroopers.materialAndroidBootstrap.core.modules.BeaconsModule;
 import com.codetroopers.materialAndroidBootstrap.core.modules.HomeActivityModule;
 import com.codetroopers.materialAndroidBootstrap.ui.activity.HomeActivity;
 import com.codetroopers.materialAndroidBootstrap.ui.fragment.BeaconsFragment;
-
 import dagger.Subcomponent;
 
 @ActivityScope
 @Subcomponent(
         modules = {
-                HomeActivityModule.class,
-                BeaconsModule.class
+                HomeActivityModule.class
         }
 )
 public interface HomeActivityComponent {

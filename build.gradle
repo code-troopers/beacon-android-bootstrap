@@ -28,5 +28,6 @@ allprojects {
         maven {url "https://clojars.org/repo/"}
         //Uncomment to add crashlytics
         //maven { url 'https://maven.fabric.io/public' }
+        maven { url 'http://repo.kontakt.io/repository/internal/' }
     }
 }

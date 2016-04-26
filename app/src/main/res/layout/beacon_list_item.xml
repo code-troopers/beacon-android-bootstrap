@@ -1,329 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingTop="10dp">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:paddingTop="10dp">
 
+    <TextView
+            android:id="@+id/url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            tools:text="http://code-troopers.com"/>
     <!-- Device address, RSSI -->
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/deviceAddress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/device_address"
-            android:textStyle="bold" />
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="@string/rssi" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/rssi"/>
 
         <TextView
-            android:id="@+id/rssi"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp" />
+                android:id="@+id/rssi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"/>
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="@string/distance" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/distance"/>
 
         <TextView
-            android:id="@+id/distance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp" />
-
-    </LinearLayout>
-
-    <!-- UID frame -->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/uidLabel"
-            android:layout_width="@dimen/frame_type_width"
-            android:layout_height="wrap_content"
-            android:text="@string/uid" />
-
-        <LinearLayout
-            android:id="@+id/uidGroup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <!-- Namespace -->
-            <LinearLayout
+                android:id="@+id/distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:text="@string/namespace" />
-
-                <TextView
-                    android:id="@+id/uidNamespace"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
-
-            <!-- Instance -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:text="@string/instance" />
-
-                <TextView
-                    android:id="@+id/uidInstance"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
-
-            <!-- Tx power -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:text="@string/tx_power" />
-
-                <TextView
-                    android:id="@+id/uidTxPower"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
-
-            <!-- Errors -->
-            <LinearLayout
-                android:id="@+id/uidErrorGroup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:text="@string/errors"
-                    android:textStyle="italic" />
-
-                <TextView
-                    android:id="@+id/uidErrors"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <!-- TLM frame -->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/tlmLabel"
-            android:layout_width="@dimen/frame_type_width"
-            android:layout_height="wrap_content"
-            android:text="@string/tlm" />
-
-        <LinearLayout
-            android:id="@+id/tlmGroup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <!-- Version -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:text="@string/version" />
-
-                <TextView
-                    android:id="@+id/tlmVersion"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
-
-            <!-- Voltage -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:text="@string/voltage" />
-
-                <TextView
-                    android:id="@+id/tlmVoltage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
-
-            <!-- Temperature -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:text="@string/temperature" />
-
-                <TextView
-                    android:id="@+id/tlmTemp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
-
-            <!-- PDU count -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:text="@string/pdu_count" />
-
-                <TextView
-                    android:id="@+id/tlmAdvCount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
-
-            <!-- Time since boot -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:text="@string/boot_count" />
-
-                <TextView
-                    android:id="@+id/tlmSecCnt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
-
-            <!-- Errors -->
-            <LinearLayout
-                android:id="@+id/tlmErrorGroup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:text="@string/errors"
-                    android:textStyle="italic" />
-
-                <TextView
-                    android:id="@+id/tlmErrors"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/urlLabel"
-            android:layout_width="@dimen/frame_type_width"
-            android:layout_height="wrap_content"
-            android:text="@string/url" />
-
-        <TextView
-            android:id="@+id/urlStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/url" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/frameStatusGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/frame_errors"
-            android:textColor="#960000" />
-
-        <TextView
-            android:id="@+id/frameStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+                android:layout_marginLeft="10dp"/>
 
     </LinearLayout>
 

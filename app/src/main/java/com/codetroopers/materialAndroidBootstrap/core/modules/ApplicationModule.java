@@ -2,10 +2,6 @@ package com.codetroopers.materialAndroidBootstrap.core.modules;
 
 import android.content.Context;
 
-import com.codetroopers.materialAndroidBootstrap.core.CTBus;
-
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,11 +21,5 @@ public class ApplicationModule {
     @ForApplication
     Context provideApplicationContext() {
         return applicationContext;
-    }
-
-    @Provides
-    @Singleton
-    CTBus provideBus() {
-        return new CTBus();
     }
 }

@@ -1,6 +1,5 @@
 package com.codetroopers.materialAndroidBootstrap.ui.activity;
 
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,7 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-
+import butterknife.Bind;
 import com.codetroopers.materialAndroidBootstrap.R;
 import com.codetroopers.materialAndroidBootstrap.core.HasComponent;
 import com.codetroopers.materialAndroidBootstrap.core.components.ComponentsFactory;
@@ -24,13 +23,11 @@ import com.codetroopers.materialAndroidBootstrap.ui.activity.core.BaseActionBarA
 import com.codetroopers.materialAndroidBootstrap.util.MenuItemUtil;
 import com.codetroopers.materialAndroidBootstrap.util.Strings;
 import com.codetroopers.materialAndroidBootstrap.util.UIUtils;
-
-import javax.inject.Inject;
-
-import butterknife.Bind;
 import hugo.weaving.DebugLog;
 import icepick.State;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 import static java.lang.String.format;
 
@@ -186,10 +183,6 @@ public class HomeActivity extends BaseActionBarActivity implements
         switch (item.getItemId()) {
             case android.R.id.home:
                 mDrawer.openDrawer(GravityCompat.START);
-                return true;
-            case R.id.action_settings:
-                Intent intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
                 return true;
         }
         return super.onOptionsItemSelected(item);
