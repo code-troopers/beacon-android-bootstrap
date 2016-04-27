@@ -1,0 +1,35 @@
+sudo: false
+language: android
+jdk: oraclejdk8
+env:
+  matrix:
+  - ANDROID_TARGET=android-19  ANDROID_ABI=armeabi-v7a
+cache:
+  directories:
+  - "/usr/local/android-sdk/"
+  - "~/.gradle/wrapper"
+  - "~/.gradle/caches"
+android:
+  components:
+  - tools
+  - platform-tools
+  - build-tools-23.0.2
+  - android-23
+  - extra-google-m2repository
+  - extra-android-m2repository
+  - addon
+  - sys-img-armeabi-v7a-android-21
+notifications:
+  slack:
+    secure: Rub6aBzYVqeRyYAlkrspJ/4pTq1Xn+kpOIJt1ZfaFS5fEEEeeIrr3yKOWA6BkHcjqbTeTIrVtUz6TPsovr51jq8d2SrcJWGuV36+Ynec3s6rifFTtWvw0wC4N3PopGe2LeKJeEXk7Zk6BhhOLc5jLrdSlAX8nQnZ417rdtNDjHY=
+before_script:
+- echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
+- emulator -avd test -no-skin -no-audio -no-window &
+- android-wait-for-emulator
+- adb shell input keyevent 82 &
+script:
+- "./gradlew prepareDebugDependencies"
+- "./gradlew clean"
+- "./gradlew assembleDebug"
+- "./gradlew testReleaseUnitTest --info --stacktrace"
+- "./gradlew connectedAndroidTest --info --stacktrace"
