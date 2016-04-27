@@ -30,15 +30,27 @@
                 android:layout_height="wrap_content"
                 android:text="@string/empty" />
 
-            <fragment
-                android:id="@+id/beacons_fragment"
-                android:name="com.codetroopers.materialAndroidBootstrap.ui.fragment.BeaconsFragment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/content"
-                tools:layout="@layout/fragment_beacons" />
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="match_parent"
+                          android:layout_below="@+id/content"
+                          android:layout_marginTop="20dp">
 
+                <ListView
+                        android:id="@+id/beacons"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:listSelector="@android:color/transparent"
+                        android:transcriptMode="alwaysScroll"
+                        android:stackFromBottom="true"/>
 
+                <TextView
+                        android:id="@+id/noBeaconPlaceholder"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="16dp"
+                        android:text="@string/no_device"/>
+
+            </LinearLayout>
         </RelativeLayout>
     </RelativeLayout>
 

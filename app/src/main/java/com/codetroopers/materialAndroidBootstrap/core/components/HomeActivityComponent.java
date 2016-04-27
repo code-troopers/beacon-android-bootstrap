@@ -2,7 +2,6 @@ package com.codetroopers.materialAndroidBootstrap.core.components;
 
 import com.codetroopers.materialAndroidBootstrap.core.modules.HomeActivityModule;
 import com.codetroopers.materialAndroidBootstrap.ui.activity.HomeActivity;
-import com.codetroopers.materialAndroidBootstrap.ui.fragment.BeaconsFragment;
 import dagger.Subcomponent;
 
 @ActivityScope
@@ -13,6 +12,4 @@ import dagger.Subcomponent;
 )
 public interface HomeActivityComponent {
     void injectActivity(HomeActivity homeActivity);
-
-    void inject(BeaconsFragment beaconsFragment);
 }

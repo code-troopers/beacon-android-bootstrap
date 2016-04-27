@@ -5,14 +5,27 @@ import android.util.Log;
 import com.codetroopers.materialAndroidBootstrap.BuildConfig;
 import com.codetroopers.materialAndroidBootstrap.core.components.ApplicationComponent;
 import com.codetroopers.materialAndroidBootstrap.core.components.ComponentsFactory;
-import com.kontakt.sdk.android.common.KontaktSDK;
-import com.kontakt.sdk.android.common.log.LogLevel;
 import com.squareup.leakcanary.LeakCanary;
 import icepick.Icepick;
+import org.altbeacon.beacon.BeaconManager;
+import org.altbeacon.beacon.logging.LogManager;
+import org.altbeacon.beacon.logging.Loggers;
+import org.altbeacon.beacon.powersave.BackgroundPowerSaver;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 public class AndroidBootstrapApplication extends Application implements HasComponent<ApplicationComponent> {
     private ApplicationComponent applicationComponent;
+
+    /**
+     * Simply constructing this class and holding a reference to it in the Application class
+     * enables auto battery saving of about 60%
+     */
+    @Inject
+    BackgroundPowerSaver backgroundPowerSaver;
+    @Inject
+    BeaconManager beaconManager;
 
     @Override
     public void onCreate() {
@@ -20,11 +33,11 @@ public class AndroidBootstrapApplication extends Application implements HasCompo
         //Uncomment to add crashlytics
         //Fabric.with(this, new Crashlytics());
 
+        getComponent().inject(this);
+
         initLoggers();
         Icepick.setDebug(BuildConfig.DEBUG);
         LeakCanary.install(this);
-
-        initKontaktSdk();
     }
 
     @Override
@@ -42,6 +55,8 @@ public class AndroidBootstrapApplication extends Application implements HasCompo
     private void initLoggers() {
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
+            LogManager.setLogger(Loggers.verboseLogger());
+            LogManager.setVerboseLoggingEnabled(true);
         } else {
             // only log INFO+ with no tag tracing the calling class
             Timber.plant(new Timber.Tree() {
@@ -52,15 +67,8 @@ public class AndroidBootstrapApplication extends Application implements HasCompo
                     }
                 }
             });
-        }
-    }
-
-    private void initKontaktSdk() {
-        KontaktSDK kontaktSDK = KontaktSDK.initialize(this);
-        if (BuildConfig.DEBUG) {
-            kontaktSDK
-                    .setDebugLoggingEnabled(BuildConfig.DEBUG)
-                    .setLogLevelEnabled(LogLevel.DEBUG, true);
+            LogManager.setLogger(Loggers.warningLogger());
+            LogManager.setVerboseLoggingEnabled(false);
         }
     }
 }

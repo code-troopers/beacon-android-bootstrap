@@ -26,8 +26,11 @@ allprojects {
         jcenter()
         mavenCentral()
         maven {url "https://clojars.org/repo/"}
+
+        // repo for Android Beacon Library
+        repositories { jcenter() }
+
         //Uncomment to add crashlytics
         //maven { url 'https://maven.fabric.io/public' }
-        maven { url 'http://repo.kontakt.io/repository/internal/' }
     }
 }

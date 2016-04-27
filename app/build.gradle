@@ -38,7 +38,6 @@ android {
         exclude 'LICENSE'
         exclude 'NOTICE'
         exclude 'META-INF/MANIFEST.MF'
-        exclude 'main/AndroidManifest.xml'
     }
     //noinspection GroovyMissingReturnStatement
     lintOptions {
@@ -62,7 +61,7 @@ dependencies {
     def mockitoVersion = "1.10.19"
     def icepickVersion = "3.1.0"
     def googleSupportVersion = '23.1.1'
-    def kontaktioVersion = '2.1.0'
+    def androidBeaconLibVersion = '2.8.1'
 
     apt "com.google.dagger:dagger-compiler:" + daggerVersion
     apt 'com.github.frankiesardo:auto-parcel-processor:' + autoparcelVersion
@@ -80,7 +79,7 @@ dependencies {
     compile 'com.jakewharton.timber:timber:3.1.0'
     compile 'com.github.frankiesardo:auto-parcel:' + autoparcelVersion
     compile 'frankiesardo:icepick:' + icepickVersion
-    compile 'com.kontakt.sdk.android:kontakt.io-android-sdk:' + kontaktioVersion
+    compile 'org.altbeacon:android-beacon-library:' + androidBeaconLibVersion
 
     //Uncomment to add crashlytics
     //compile('com.crashlytics.sdk.android:crashlytics:2.2.0@aar') {

@@ -7,12 +7,44 @@
               android:paddingTop="10dp">
 
     <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="@string/namespaceId"/>
+
+    <TextView
+            android:id="@+id/nameSpaceId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            tools:text="aNamespaceID"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="@string/instanceId"/>
+
+    <TextView
+            android:id="@+id/instanceId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            tools:text="anInstanceID"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="@string/url"/>
+
+    <TextView
             android:id="@+id/url"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             tools:text="http://code-troopers.com"/>
-    <!-- Device address, RSSI -->
+
     <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

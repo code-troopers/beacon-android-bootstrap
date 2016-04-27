@@ -32,12 +32,3 @@
 -keepclasseswithmembernames class * {
     @icepick.* <fields>;
 }
-
-# for KontaktIO SDK
--keep class com.squareup.okhttp.** { *; }
--keep interface com.squareup.okhttp.** { *; }
--dontwarn com.squareup.okhttp.**
--dontwarn okio.**
-
--keep class com.kontakt.sdk.** { *; }
--keep interface com.kontakt.sdk.** { *; }

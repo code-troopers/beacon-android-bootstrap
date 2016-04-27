@@ -2,17 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.codetroopers.materialAndroidBootstrap">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <!-- Marshmallow -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
-    <uses-feature
-        android:name="android.hardware.bluetooth_le"
-        android:required="true" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:name="com.codetroopers.materialAndroidBootstrap.core.AndroidBootstrapApplication"
@@ -20,11 +10,6 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
-
-        <meta-data
-                android:name="kontakt.io.API_KEY"
-                android:value="@string/kontakt_io_api_key" />
-
         <activity
             android:name="com.codetroopers.materialAndroidBootstrap.ui.activity.HomeActivity"
             android:label="@string/app_name">
@@ -33,13 +18,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <!--Uncomment to add crashlytics-->
         <!--<meta-data-->
         <!--android:name="com.crashlytics.ApiKey"-->
         <!--android:value="<YOUR_KEY>" />-->
-
-        <service android:name="com.kontakt.sdk.android.ble.service.ProximityService" android:exported="false"/>
-
     </application>
 </manifest>

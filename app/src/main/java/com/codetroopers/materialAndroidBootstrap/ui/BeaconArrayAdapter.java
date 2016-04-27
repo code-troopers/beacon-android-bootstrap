@@ -24,8 +24,8 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.codetroopers.materialAndroidBootstrap.R;
-import com.kontakt.sdk.android.common.profile.IEddystoneDevice;
-import com.kontakt.sdk.android.common.profile.RemoteBluetoothDevice;
+import com.codetroopers.materialAndroidBootstrap.util.BeaconsUtil;
+import org.altbeacon.beacon.Beacon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,15 +34,15 @@ import java.util.Locale;
 /**
  * Simple ArrayAdapter to manage the UI for displaying validation results.
  */
-public class BeaconArrayAdapter extends ArrayAdapter<RemoteBluetoothDevice> implements Filterable {
+public class BeaconArrayAdapter extends ArrayAdapter<Beacon> implements Filterable {
 
-    private List<RemoteBluetoothDevice> filteredBeacons;
+    private List<Beacon> filteredBeacons;
 
     public BeaconArrayAdapter(Context context) {
         this(context, new ArrayList<>());
     }
 
-    private BeaconArrayAdapter(Context context, List<RemoteBluetoothDevice> allBeacons) {
+    private BeaconArrayAdapter(Context context, List<Beacon> allBeacons) {
         super(context, R.layout.beacon_list_item, allBeacons);
         this.filteredBeacons = allBeacons;
     }
@@ -53,7 +53,7 @@ public class BeaconArrayAdapter extends ArrayAdapter<RemoteBluetoothDevice> impl
     }
 
     @Override
-    public RemoteBluetoothDevice getItem(int position) {
+    public Beacon getItem(int position) {
         return filteredBeacons.get(position);
     }
 
@@ -68,7 +68,7 @@ public class BeaconArrayAdapter extends ArrayAdapter<RemoteBluetoothDevice> impl
         // a recycled view of some other row that isn't in view. You need to set every
         // field regardless of emptiness to avoid displaying erroneous data.
 
-        final RemoteBluetoothDevice beacon = getItem(position);
+        final Beacon beacon = getItem(position);
 
         ViewHolder viewHolder = new ViewHolder(convertView);
 
@@ -82,9 +82,14 @@ public class BeaconArrayAdapter extends ArrayAdapter<RemoteBluetoothDevice> impl
          * FAR = Android device distance from Beacon is higher than 3m.
          * UNKNOWN = The UNKNOWN.
          */
-        viewHolder.mProximity.setText(beacon.getProximity().toString());
+        viewHolder.mProximity.setText(BeaconsUtil.getProximityFromBeacon(beacon).toString());
 
-        viewHolder.mUrl.setText(((IEddystoneDevice) beacon).getUrl());
+        viewHolder.mUrl.setText(BeaconsUtil.getUrlFromBeacon(beacon));
+        BeaconsUtil.EddystoneUID eddystoneUID = BeaconsUtil.getEddystoneUIDfromBeacon(beacon);
+        if (eddystoneUID != null) {
+            viewHolder.mNameSpaceId.setText(eddystoneUID.namespaceId.toString());
+            viewHolder.mInstanceId.setText(eddystoneUID.instanceId.toString());
+        }
 
         return convertView;
     }
@@ -96,6 +101,10 @@ public class BeaconArrayAdapter extends ArrayAdapter<RemoteBluetoothDevice> impl
      * @author ButterKnifeZelezny, plugin for Android Studio by Avast Developers (http://github.com/avast)
      */
     static class ViewHolder {
+        @Bind(R.id.nameSpaceId)
+        TextView mNameSpaceId;
+        @Bind(R.id.instanceId)
+        TextView mInstanceId;
         @Bind(R.id.rssi)
         TextView mRssi;
         @Bind(R.id.distance)
