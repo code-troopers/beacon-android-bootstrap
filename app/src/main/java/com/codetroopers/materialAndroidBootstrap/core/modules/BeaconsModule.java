@@ -15,7 +15,8 @@ import dagger.Module;
 import dagger.Provides;
 
 import javax.inject.Singleton;
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 @Module
 public class BeaconsModule {
@@ -28,19 +29,20 @@ public class BeaconsModule {
     @Singleton
     ScanContext provideScanContext(final EddystoneScanContext eddystoneScanContext) {
         return new ScanContext.Builder()
-                .setForceScanConfiguration(ForceScanConfiguration.DISABLED)
                 .setScanMode(ProximityManager.SCAN_MODE_LOW_LATENCY)
+//                .setScanPeriod(ScanPeriod.RANGING)
+                .setScanPeriod(new ScanPeriod(TimeUnit.SECONDS.toMillis(20), 0))
                 .setActivityCheckConfiguration(ActivityCheckConfiguration.MINIMAL)
+                .setForceScanConfiguration(ForceScanConfiguration.MINIMAL)
                 .setEddystoneScanContext(eddystoneScanContext)
                 .setIBeaconScanContext(IBeaconScanContext.DEFAULT)
-                .setScanPeriod(new ScanPeriod(3000, 0))
                 .build();
     }
 
     @Provides
     EddystoneScanContext provideEddystoneScanContext() {
         return new EddystoneScanContext.Builder()
-                .setTriggerFrameTypes(Arrays.asList(EddystoneFrameType.UID, EddystoneFrameType.URL, EddystoneFrameType.TLM))
+                .setTriggerFrameTypes(Collections.singletonList(EddystoneFrameType.UID))
                 .setRssiCalculator(RssiCalculators.newLimitedMeanRssiCalculator(3))
                 .build();
     }

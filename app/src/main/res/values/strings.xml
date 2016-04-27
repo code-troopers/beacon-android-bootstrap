@@ -11,6 +11,7 @@
     <string name="empty" />
 
     <string name="rssi">RSSI</string>
+    <string name="proximity">Proximity</string>
     <string name="distance">Distance</string>
     <string name="no_device">No Eddystone devices detected or matched the filter…</string>
 </resources>

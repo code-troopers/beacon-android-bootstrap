@@ -15,7 +15,6 @@
 package com.codetroopers.materialAndroidBootstrap.ui;
 
 import android.content.Context;
-import android.support.annotation.BinderThread;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +24,6 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.codetroopers.materialAndroidBootstrap.R;
-import com.kontakt.sdk.android.common.profile.IBeaconDevice;
 import com.kontakt.sdk.android.common.profile.IEddystoneDevice;
 import com.kontakt.sdk.android.common.profile.RemoteBluetoothDevice;
 
@@ -76,8 +74,15 @@ public class BeaconArrayAdapter extends ArrayAdapter<RemoteBluetoothDevice> impl
 
         viewHolder.mRssi.setText(String.valueOf(beacon.getRssi()));
 
-        final String distance = String.format(Locale.getDefault(), "%.2f m", beacon.getDistance() / 1000.0);
+        final String distance = String.format(Locale.getDefault(), "%.2f", beacon.getDistance());
         viewHolder.mDistance.setText(distance);
+        /**
+         * IMMEDIATE = Android device distance from Beacon is within [0 - 0,5]m.
+         * NEAR = Android device distance from Beacon is within [0,5 - 3]m.
+         * FAR = Android device distance from Beacon is higher than 3m.
+         * UNKNOWN = The UNKNOWN.
+         */
+        viewHolder.mProximity.setText(beacon.getProximity().toString());
 
         viewHolder.mUrl.setText(((IEddystoneDevice) beacon).getUrl());
 
@@ -97,6 +102,8 @@ public class BeaconArrayAdapter extends ArrayAdapter<RemoteBluetoothDevice> impl
         TextView mDistance;
         @Bind(R.id.url)
         TextView mUrl;
+        @Bind(R.id.proximity)
+        TextView mProximity;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);
