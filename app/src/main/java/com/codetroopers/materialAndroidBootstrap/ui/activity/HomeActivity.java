@@ -313,26 +313,10 @@ public class HomeActivity extends BaseActionBarActivity implements
     private void verifyBluetooth() {
         try {
             if (!beaconManager.checkAvailability()) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Bluetooth not enabled");
-                builder.setMessage("Please enable bluetooth in settings and restart this application.");
-                builder.setPositiveButton(android.R.string.ok, null);
-                builder.setOnDismissListener(dialog -> {
-                    finish();
-                    System.exit(0);
-                });
-                builder.show();
+                UIUtils.showEnableBluetoothDialog(this);
             }
         } catch (RuntimeException e) {
-            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Bluetooth LE not available");
-            builder.setMessage("Sorry, this device does not support Bluetooth LE.");
-            builder.setPositiveButton(android.R.string.ok, null);
-            builder.setOnDismissListener(dialog -> {
-                finish();
-                System.exit(0);
-            });
-            builder.show();
+            UIUtils.showNoBLESupportDialog(this);
         }
     }
 
@@ -340,13 +324,9 @@ public class HomeActivity extends BaseActionBarActivity implements
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // Android M Permission check
             if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("This app needs location access");
-                builder.setMessage("Please grant location access so this app can detect beacons in the background.");
-                builder.setPositiveButton(android.R.string.ok, null);
-                builder.setOnDismissListener(dialog -> requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_REQUEST_COARSE_LOCATION));
-                builder.show();
+                UIUtils.showGrantLocationAccessDialog(this, PERMISSION_REQUEST_COARSE_LOCATION);
             }
         }
     }
+
 }
