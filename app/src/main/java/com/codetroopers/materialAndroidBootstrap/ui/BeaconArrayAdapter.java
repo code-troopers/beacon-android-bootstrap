@@ -24,8 +24,8 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.codetroopers.materialAndroidBootstrap.R;
-import com.codetroopers.materialAndroidBootstrap.util.BeaconsUtil;
-import org.altbeacon.beacon.Beacon;
+import com.codetroopers.materialAndroidBootstrap.beacon.BeaconWrapper;
+import com.codetroopers.materialAndroidBootstrap.beacon.EddystoneUID;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,15 +34,15 @@ import java.util.Locale;
 /**
  * Simple ArrayAdapter to manage the UI for displaying validation results.
  */
-public class BeaconArrayAdapter extends ArrayAdapter<Beacon> implements Filterable {
+public class BeaconArrayAdapter extends ArrayAdapter<BeaconWrapper> implements Filterable {
 
-    private List<Beacon> filteredBeacons;
+    private List<BeaconWrapper> filteredBeacons;
 
     public BeaconArrayAdapter(Context context) {
         this(context, new ArrayList<>());
     }
 
-    private BeaconArrayAdapter(Context context, List<Beacon> allBeacons) {
+    private BeaconArrayAdapter(Context context, List<BeaconWrapper> allBeacons) {
         super(context, R.layout.beacon_list_item, allBeacons);
         this.filteredBeacons = allBeacons;
     }
@@ -53,7 +53,7 @@ public class BeaconArrayAdapter extends ArrayAdapter<Beacon> implements Filterab
     }
 
     @Override
-    public Beacon getItem(int position) {
+    public BeaconWrapper getItem(int position) {
         return filteredBeacons.get(position);
     }
 
@@ -68,13 +68,13 @@ public class BeaconArrayAdapter extends ArrayAdapter<Beacon> implements Filterab
         // a recycled view of some other row that isn't in view. You need to set every
         // field regardless of emptiness to avoid displaying erroneous data.
 
-        final Beacon beacon = getItem(position);
+        final BeaconWrapper beacon = getItem(position);
 
         ViewHolder viewHolder = new ViewHolder(convertView);
 
-        viewHolder.mRssi.setText(String.valueOf(beacon.getRssi()));
+        viewHolder.mRssi.setText(String.valueOf(beacon.getBeacon().getRssi()));
 
-        final String distance = String.format(Locale.getDefault(), "%.2f", beacon.getDistance());
+        final String distance = String.format(Locale.getDefault(), "%.2f", beacon.getBeacon().getDistance());
         viewHolder.mDistance.setText(distance);
         /**
          * IMMEDIATE = Android device distance from Beacon is within [0 - 0,5]m.
@@ -82,10 +82,10 @@ public class BeaconArrayAdapter extends ArrayAdapter<Beacon> implements Filterab
          * FAR = Android device distance from Beacon is higher than 3m.
          * UNKNOWN = The UNKNOWN.
          */
-        viewHolder.mProximity.setText(BeaconsUtil.getProximityFromBeacon(beacon).toString());
+        viewHolder.mProximity.setText(beacon.getProximity().toString());
 
-        viewHolder.mUrl.setText(BeaconsUtil.getUrlFromBeacon(beacon));
-        BeaconsUtil.EddystoneUID eddystoneUID = BeaconsUtil.getEddystoneUIDfromBeacon(beacon);
+        viewHolder.mUrl.setText(beacon.getUrl());
+        EddystoneUID eddystoneUID = beacon.getEddystoneUID();
         if (eddystoneUID != null) {
             viewHolder.mNameSpaceId.setText(eddystoneUID.namespaceId.toString());
             viewHolder.mInstanceId.setText(eddystoneUID.instanceId.toString());

@@ -21,6 +21,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.Bind;
 import com.codetroopers.materialAndroidBootstrap.R;
+import com.codetroopers.materialAndroidBootstrap.beacon.BeaconWrapper;
+import com.codetroopers.materialAndroidBootstrap.beacon.EddystoneUID;
 import com.codetroopers.materialAndroidBootstrap.core.HasComponent;
 import com.codetroopers.materialAndroidBootstrap.core.components.ComponentsFactory;
 import com.codetroopers.materialAndroidBootstrap.core.components.HomeActivityComponent;
@@ -29,7 +31,6 @@ import com.codetroopers.materialAndroidBootstrap.example.DummyContent;
 import com.codetroopers.materialAndroidBootstrap.example.DummyContentFactory;
 import com.codetroopers.materialAndroidBootstrap.ui.BeaconArrayAdapter;
 import com.codetroopers.materialAndroidBootstrap.ui.activity.core.BaseActionBarActivity;
-import com.codetroopers.materialAndroidBootstrap.util.BeaconsUtil;
 import com.codetroopers.materialAndroidBootstrap.util.MenuItemUtil;
 import com.codetroopers.materialAndroidBootstrap.util.Strings;
 import com.codetroopers.materialAndroidBootstrap.util.UIUtils;
@@ -38,11 +39,11 @@ import icepick.State;
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
 import org.altbeacon.beacon.BeaconManager;
-import org.altbeacon.beacon.BeaconParser;
 import org.altbeacon.beacon.Region;
 import timber.log.Timber;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.String.format;
@@ -141,12 +142,6 @@ public class HomeActivity extends BaseActionBarActivity implements
     }
 
     private void setupBeaconManager() {
-        // Detect the main Eddystone-UID frame:
-        List<BeaconParser> beaconParsers = beaconManager.getBeaconParsers();
-        beaconParsers.add(new BeaconParser().setBeaconLayout(BeaconsUtil.BEACON_LAYOUT_EDDYSTONE_UID));
-        // Detect the URL frame:
-        beaconParsers.add(new BeaconParser().setBeaconLayout(BeaconsUtil.BEACON_LAYOUT_EDDYSTONE_URL));
-
         beaconManager.bind(this);
     }
 
@@ -297,18 +292,22 @@ public class HomeActivity extends BaseActionBarActivity implements
     @Override
     public void onBeaconServiceConnect() {
         beaconManager.setRangeNotifier((beacons, region) -> {
+            List<BeaconWrapper> beaconWrappers = new ArrayList<>(beacons.size());
             for (Beacon beacon : beacons) {
-                BeaconsUtil.EddystoneUID eddystoneUID = BeaconsUtil.getEddystoneUIDfromBeacon(beacon);
+                BeaconWrapper beaconWrapper = new BeaconWrapper(beacon);
+
+                EddystoneUID eddystoneUID = beaconWrapper.getEddystoneUID();
                 if (eddystoneUID != null) {
                     Timber.i("I see a beacon transmitting namespace id: %s and instance id: %s approximately %s meters away.", eddystoneUID.namespaceId, eddystoneUID.instanceId, beacon.getDistance());
                 }
-                String url = BeaconsUtil.getUrlFromBeacon(beacon);
+                String url = beaconWrapper.getUrl();
                 if (url != null) {
                     Timber.i("I see a beacon transmitting a url: %s approximately %s meters away.", url, beacon.getDistance());
                 }
+                beaconWrappers.add(beaconWrapper);
             }
             runOnUiThread(() -> {
-                beaconArrayAdapter.addAll(beacons);
+                beaconArrayAdapter.addAll(beaconWrappers);
                 beaconArrayAdapter.notifyDataSetChanged();
             });
         });
