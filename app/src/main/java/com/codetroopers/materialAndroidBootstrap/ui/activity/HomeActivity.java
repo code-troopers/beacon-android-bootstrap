@@ -96,7 +96,8 @@ public class HomeActivity extends BaseActionBarActivity implements
 
         verifyBluetooth();
         verifyMarshmallowPermissions();
-        setupBeaconManager();
+
+        beaconManager.bind(this);
 
         beaconArrayAdapter = new BeaconArrayAdapter(this);
         mBeacons.setAdapter(beaconArrayAdapter);
@@ -139,11 +140,6 @@ public class HomeActivity extends BaseActionBarActivity implements
 
         MenuItemUtil.setItemCounter(mNavigationView, R.id.nav_drawer_menu_1, 11);
     }
-
-    private void setupBeaconManager() {
-        beaconManager.bind(this);
-    }
-
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {

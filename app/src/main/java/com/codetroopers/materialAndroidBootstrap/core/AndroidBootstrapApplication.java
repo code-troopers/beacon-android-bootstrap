@@ -7,7 +7,6 @@ import com.codetroopers.materialAndroidBootstrap.core.components.ApplicationComp
 import com.codetroopers.materialAndroidBootstrap.core.components.ComponentsFactory;
 import com.squareup.leakcanary.LeakCanary;
 import icepick.Icepick;
-import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.logging.LogManager;
 import org.altbeacon.beacon.logging.Loggers;
 import org.altbeacon.beacon.powersave.BackgroundPowerSaver;
@@ -24,8 +23,6 @@ public class AndroidBootstrapApplication extends Application implements HasCompo
      */
     @Inject
     BackgroundPowerSaver backgroundPowerSaver;
-    @Inject
-    BeaconManager beaconManager;
 
     @Override
     public void onCreate() {
