@@ -63,4 +63,16 @@ public class BeaconWrapper {
             return null;
         }
     }
+
+    public String printState() {
+        StringBuilder state = new StringBuilder("Beacon detected :");
+        if (eddystoneUID != null) {
+            state.append(String.format(" [NamespaceID=%s] [InstanceID=%s]", eddystoneUID.namespaceId, eddystoneUID.instanceId));
+        }
+        if (url != null) {
+            state.append(String.format(" [URL=%s]", url));
+        }
+        state.append(String.format(" [Proximity=%s (~%.2fm)]", proximity, beacon.getDistance()));
+        return state.toString();
+    }
 }
