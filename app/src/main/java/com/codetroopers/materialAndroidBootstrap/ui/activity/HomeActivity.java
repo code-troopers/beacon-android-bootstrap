@@ -13,7 +13,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -182,6 +181,14 @@ public class HomeActivity extends BaseActionBarActivity implements
     }
 
     @Override
+    public HomeActivityComponent getComponent() {
+        if (component == null) {
+            component = ComponentsFactory.get().buildHomeActivityComponent(getApplicationComponent(), this);
+        }
+        return component;
+    }
+
+    @Override
     public void onDrawerSlide(View drawerView, float slideOffset) {
         mDrawerToggle.onDrawerSlide(drawerView, slideOffset);
     }
@@ -238,6 +245,8 @@ public class HomeActivity extends BaseActionBarActivity implements
             case android.R.id.home:
                 mDrawer.openDrawer(GravityCompat.START);
                 return true;
+            case R.id.action_settings:
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -249,14 +258,6 @@ public class HomeActivity extends BaseActionBarActivity implements
         } else {
             finish();
         }
-    }
-
-    @Override
-    public HomeActivityComponent getComponent() {
-        if (component == null) {
-            component = ComponentsFactory.get().buildHomeActivityComponent(getApplicationComponent(), this);
-        }
-        return component;
     }
 
     @Override
@@ -272,13 +273,7 @@ public class HomeActivity extends BaseActionBarActivity implements
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Timber.d("coarse location permission granted");
                 } else {
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle("Functionality limited");
-                    builder.setMessage("Since location access has not been granted, this app will not be able to discover beacons when in the background.");
-                    builder.setPositiveButton(android.R.string.ok, null);
-                    builder.setOnDismissListener(dialog -> {
-                    });
-                    builder.show();
+                    UIUtils.showNoLocationAccessDialog(this);
                 }
             }
         }
