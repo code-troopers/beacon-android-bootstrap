@@ -40,7 +40,7 @@ public class UIUtils {
 
     public static void showNoLocationAccessDialog(Activity activity) {
         showDialog(activity,
-                R.string.R_string_no_location_access_title,
+                R.string.no_location_access_title,
                 R.string.no_location_access_message,
                 dialog -> {
                 });
